@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="alert_example_top">#ffffff</color>
+    <color name="alert_example_bottom">#cccccc</color>
+    <color name="custom_blue">#00edf2</color>
+    <color name="custom_red">#f20000</color>
+    <color name="custom_green">#55f200</color>
+</resources>

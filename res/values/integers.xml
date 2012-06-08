@@ -1,0 +1,5 @@
+<resources>
+    <integer name="preference_button_weight">4</integer>
+    <integer name="preference_button_text_weight">6</integer>
+    <integer name="preference_sum">10</integer>
+</resources>

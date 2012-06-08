@@ -1,0 +1,46 @@
+<resources>
+    <style name="PreferenceTitleText">
+        <item name="android:textSize">@dimen/pref_title_size</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:shadowColor">@android:color/white</item>
+    </style>
+    <style name="PreferenceSubtitleText">
+        <item name="android:textSize">@dimen/pref_subtitle_size</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:shadowColor">@android:color/white</item>
+    </style>
+    <style name="PreferenceButton">
+        <item name="android:textSize">@dimen/pref_button_text_size</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:shadowColor">@android:color/black</item>
+    </style>
+    <style name="PreferenceSpinner">
+        <item name="android:textSize">@dimen/pref_button_text_size</item>
+        <item name="android:shadowDx">0.5</item>
+        <item name="android:shadowDy">0.5</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:shadowColor">@android:color/black</item>
+    </style>
+    <style name="PreferenceSeekBar">
+        <item name="android:max">100</item>
+    </style>
+    <style name="PreferenceSeekBarTransparent">
+        <item name="android:max">100</item>
+        <item name="android:progressDrawable">@drawable/transparent_progress_fill</item>
+    </style>
+    <style name="NotificationText">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="NotificationTitle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- If you want a slightly different color for some text,
+         consider using ?android:attr/textColorSecondary -->
+</resources>
