@@ -6,4 +6,9 @@
     <color name="yellow">#ffff00</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="gray_shadow_for_yellow_text">#444444</color>
+    <color name="check_box_outer_border">#ffffff</color>
+    <color name="check_box_inner_border">#444444</color>
+    <color name="check_box_inner_circle">#ffffff00</color>
+    <color name="check_box_outer_circle">#00ffff00</color>
 </resources>

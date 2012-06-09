@@ -4,6 +4,7 @@ import com.doomonafireball.umbee.query.WeatherQuery;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 
 public class NotificationService extends IntentService {
@@ -14,7 +15,7 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        WeatherQuery wq = new WeatherQuery(this, false);
+        WeatherQuery wq = new WeatherQuery(this, false, true, new Handler());
         wq.execute();
     }
 

@@ -1,5 +1,8 @@
 package com.doomonafireball.umbee.activity;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.doomonafireball.umbee.MainApp;
 import com.doomonafireball.umbee.R;
 import com.doomonafireball.umbee.query.WeatherQuery;
@@ -18,8 +21,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -65,6 +72,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.LL_triple_threshold_container) LinearLayout tripleThresholdLL;
     @InjectView(R.id.LL_advanced_options_container) LinearLayout advancedOptionsContainerLL;
     @InjectView(R.id.RL_threshold_container) RelativeLayout thresholdCheckRL;
+    @InjectView(R.id.FL_todays_precip_container) FrameLayout todaysPrecipContainerFL;
 
     SharedPrefsManager mSharedPrefs;
     Context mContext;
@@ -88,7 +96,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         mSharedPrefs.initialize(this);
         mSharedPrefs = SharedPrefsManager.getInstance();
 
-        alertTypeAdapter = ArrayAdapter.createFromResource(this, R.array.alert_type_array, android.R.layout.simple_dropdown_item_1line);
+        alertTypeAdapter = ArrayAdapter.createFromResource(this, R.array.alert_type_array,
+                android.R.layout.simple_dropdown_item_1line);
         alertTypeAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         alertTypeOptions = getResources().getStringArray(R.array.alert_type_array);
 
@@ -112,13 +121,36 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             advancedOptionsContainerLL.setVisibility(View.GONE);
         }
 
-        setUpViews();
+        setUpPrecipViews();
+        setUpPreferenceViews();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.startup_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_about:
+                // TODO Launch AboutActivity
+                return false;
+            case R.id.menu_refresh:
+                // TODO Refresh current stuff
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     SeekBar.OnSeekBarChangeListener singleSBCL = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-            String s = String.format(getResources().getString(R.string.dynamic_single_threshold), i);
+            String s = String
+                    .format(getResources().getString(R.string.dynamic_single_threshold), i);
             singleThresholdTV.setText(s);
         }
 
@@ -140,9 +172,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             String s;
             if (i > bar2Progress) {
                 seekBar.setProgress(bar2Progress);
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), bar2Progress, bar2Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1),
+                        bar2Progress, bar2Progress);
             } else {
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), i, bar2Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), i,
+                        bar2Progress);
             }
             tripleThreshold2SB.setSecondaryProgress(seekBar.getProgress());
             tripleThresholdTV.setText(s);
@@ -167,15 +201,21 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             String s2;
             if (i > bar3Progress) {
                 seekBar.setProgress(bar3Progress);
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), bar1Progress, bar3Progress);
-                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2), bar3Progress, bar3Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1),
+                        bar1Progress, bar3Progress);
+                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2),
+                        bar3Progress, bar3Progress);
             } else if (i < bar1Progress) {
                 seekBar.setProgress(bar1Progress);
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), bar1Progress, bar1Progress);
-                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2), bar1Progress, bar3Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1),
+                        bar1Progress, bar1Progress);
+                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2),
+                        bar1Progress, bar3Progress);
             } else {
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1), bar1Progress, i);
-                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2), i, bar3Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold1),
+                        bar1Progress, i);
+                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold2), i,
+                        bar3Progress);
             }
             tripleThreshold3SB.setSecondaryProgress(seekBar.getProgress());
             tripleThresholdTV.setText(s);
@@ -202,10 +242,13 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             String s2;
             if (i < bar2Progress) {
                 seekBar.setProgress(bar2Progress);
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold2), bar2Progress, bar2Progress);
-                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold3), bar2Progress);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold2),
+                        bar2Progress, bar2Progress);
+                s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold3),
+                        bar2Progress);
             } else {
-                s = String.format(getResources().getString(R.string.dynamic_triple_threshold2), bar2Progress, i);
+                s = String.format(getResources().getString(R.string.dynamic_triple_threshold2),
+                        bar2Progress, i);
                 s2 = String.format(getResources().getString(R.string.dynamic_triple_threshold3), i);
             }
             tripleThreshold2TV.setText(s);
@@ -223,7 +266,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener enableCCL = new CompoundButton.OnCheckedChangeListener() {
+    CompoundButton.OnCheckedChangeListener enableCCL
+            = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setEnabled(b);
@@ -232,11 +276,12 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             } else {
                 cancelUmbeeService();
             }
-            setUpViews();
+            setUpPreferenceViews();
         }
     };
 
-    CompoundButton.OnCheckedChangeListener customThresholdCCL = new CompoundButton.OnCheckedChangeListener() {
+    CompoundButton.OnCheckedChangeListener customThresholdCCL
+            = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setCustomThreshold(b);
@@ -244,7 +289,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener enableLocationUpdatesCCL = new CompoundButton.OnCheckedChangeListener() {
+    CompoundButton.OnCheckedChangeListener enableLocationUpdatesCCL
+            = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setEnableLocationUpdates(b);
@@ -259,7 +305,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                 String loc = locationET.getText().toString();
                 if (UmbeeTextUtils.isValidZipCode(loc)) {
                     mSharedPrefs.setLocation(loc);
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager mgr = (InputMethodManager) getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
                     Toast.makeText(mContext, "Zip code saved!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -273,7 +320,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     View.OnClickListener testNotificationCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true);
+            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true, new Handler());
             testNotifQuery.execute();
         }
     };
@@ -294,14 +341,17 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     View.OnClickListener updateTimeCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            TimePickerDialog dialog = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-                    mSharedPrefs.setUpdateTime(UmbeeTimeUtils.timeOfDayFromTimePicker(hourOfDay, minute));
-                    updateTimeBTN.setText(UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
-                    startUmbeeService();
-                }
-            },
+            TimePickerDialog dialog = new TimePickerDialog(mContext,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                            mSharedPrefs.setUpdateTime(
+                                    UmbeeTimeUtils.timeOfDayFromTimePicker(hourOfDay, minute));
+                            updateTimeBTN.setText(
+                                    UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+                            startUmbeeService();
+                        }
+                    },
                     UmbeeTimeUtils.hourOfDayFromInt(mSharedPrefs.getUpdateTime()),
                     UmbeeTimeUtils.minuteFromInt(mSharedPrefs.getUpdateTime()),
                     false);
@@ -319,17 +369,18 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
 
                 }
             });
-            builder.setSingleChoiceItems(alertTypeAdapter, 0, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    int selectedAlertType = i + Refs.ALERT_BASE;
-                    mSharedPrefs.setAlertType(selectedAlertType);
-                    alertTypeBTN.setText(alertTypeOptions[i]);
-                    dialogInterface.dismiss();
-                    setUpViews();
-                    setUpThresholdViews();
-                }
-            });
+            builder.setSingleChoiceItems(alertTypeAdapter, 0,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            int selectedAlertType = i + Refs.ALERT_BASE;
+                            mSharedPrefs.setAlertType(selectedAlertType);
+                            alertTypeBTN.setText(alertTypeOptions[i]);
+                            dialogInterface.dismiss();
+                            setUpPreferenceViews();
+                            setUpThresholdViews();
+                        }
+                    });
             builder.setTitle("Alert Type");
             AlertDialog alert = builder.create();
             alert.show();
@@ -340,7 +391,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         Intent notif = new Intent(mContext, NotificationReceiver.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, notif, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, notif,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         am.cancel(pi);
@@ -351,14 +403,16 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         String s = "";
         Calendar currCal = new GregorianCalendar();
         Calendar cal = new GregorianCalendar();
-        cal.set(Calendar.HOUR_OF_DAY, UmbeeTimeUtils.hourOfDayFromInt(mSharedPrefs.getUpdateTime()));
+        cal.set(Calendar.HOUR_OF_DAY,
+                UmbeeTimeUtils.hourOfDayFromInt(mSharedPrefs.getUpdateTime()));
         cal.set(Calendar.MINUTE, UmbeeTimeUtils.minuteFromInt(mSharedPrefs.getUpdateTime()));
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         if (currCal.after(cal)) {
             // Increment the day
             cal.add(Calendar.DAY_OF_MONTH, 1);
-            s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for), "tomorrow",
+            s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for),
+                    "tomorrow",
                     UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
         } else {
             s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for), "today",
@@ -368,15 +422,39 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         Intent notif = new Intent(mContext, NotificationReceiver.class);
         //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, notif, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, notif,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY,
+                pi);
         Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
         Log.d(MainApp.TAG, "Set alarmManager.setRepeating to: " + cal.getTime().toLocaleString());
     }
 
-    private void setUpViews() {
+    private void setUpPrecipViews() {
+        if ((mSharedPrefs.getNoaaEveningPrecip() == -1)
+                || (mSharedPrefs.getNoaaMorningPrecip() == -1)) {
+            // We haven't gotten any info yet.
+            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, true, new Handler() {
+                public void HandleMessage(Message msg) {
+                    setUpPrecipViews();
+                }
+            });
+            getWeatherQuery.execute();
+        } else {
+            LayoutInflater li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View precipNoaaVW = li.inflate(R.layout.precip_noaa, null);
+            TextView morningPrecipTV = (TextView) precipNoaaVW.findViewById(R.id.TV_morning_precip);
+            TextView eveningPrecipTV = (TextView) precipNoaaVW.findViewById(R.id.TV_evening_precip);
+            morningPrecipTV.setText(String.format(getResources().getString(R.string.dynamic_int_percentage), mSharedPrefs.getNoaaMorningPrecip()));
+            eveningPrecipTV.setText(String.format(getResources().getString(R.string.dynamic_int_percentage), mSharedPrefs.getNoaaEveningPrecip()));
+            todaysPrecipContainerFL.removeAllViews();
+            todaysPrecipContainerFL.addView(precipNoaaVW);
+        }
+    }
+
+    private void setUpPreferenceViews() {
         boolean isCustomThreshold = mSharedPrefs.getCustomThreshold();
         customThresholdCB.setChecked(isCustomThreshold);
 

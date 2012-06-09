@@ -13,6 +13,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.util.GregorianCalendar;
@@ -22,19 +24,24 @@ import java.util.GregorianCalendar;
  */
 public class WeatherQuery extends AsyncTask<Void, Void, Void> {
 
-    private static final String NOAA_URL = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php";
+    private static final String NOAA_URL
+            = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php";
 
     private boolean mIsTestNotif;
+    private boolean mCreateNotif;
     private Context mContext;
     private ProgressDialog mDialog;
     private NoaaByDay mNbd = new NoaaByDay();
     private SharedPrefsManager mSPM;
+    private Handler mHandler;
 
-    public WeatherQuery(Context ctx, boolean isTestNotif) {
+    public WeatherQuery(Context ctx, boolean isTestNotif, boolean createNotif, Handler handler) {
         SharedPrefsManager.initialize(ctx);
         mSPM = SharedPrefsManager.getInstance();
         this.mContext = ctx;
         this.mIsTestNotif = isTestNotif;
+        this.mCreateNotif = createNotif;
+        this.mHandler = handler;
     }
 
     @Override
@@ -64,7 +71,8 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         noaaClient.AddParam("format", "24 hourly");
         noaaClient.AddParam("numDays", "1");
         noaaClient.AddParam("zipCodeList", mSPM.getLocation());
-        noaaClient.AddParam("startDate", UmbeeTimeUtils.formatNoaaForCalendar(new GregorianCalendar()));
+        noaaClient.AddParam("startDate",
+                UmbeeTimeUtils.formatNoaaForCalendar(new GregorianCalendar()));
         try {
             noaaClient.Execute(RestClient.RequestMethod.GET);
         } catch (Exception e) {
@@ -92,7 +100,13 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         if (mIsTestNotif) {
             mDialog.dismiss();
         }
-        // Create notification
-        UmbeeNotifUtils.createNotification(mContext, mNbd);
+        // Persist data to SharedPrefs
+        mSPM.setNoaaMorningPrecip(mNbd.mPop.morningProbability);
+        mSPM.setNoaaEveningPrecip(mNbd.mPop.eveningProbability);
+        if (mCreateNotif) {
+            // Create notification
+            UmbeeNotifUtils.createNotification(mContext, mNbd);
+        }
+        mHandler.sendMessage(new Message());
     }
 }

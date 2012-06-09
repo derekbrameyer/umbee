@@ -22,6 +22,8 @@ public class SharedPrefsManager {
     private static String UMBEE_TRIPLE_THRESHOLD_3 = "umbee_triple_threshold_3";
     private static String UMBEE_ENABLE_LOCATION_UPDATE = "umbee_enable_location_update";
     private static String UMBEE_ADVANCED_OPTIONS = "umbee_advanced_options";
+    private static String UMBEE_NOAA_MORNING = "umbee_noaa_morning";
+    private static String UMBEE_NOAA_EVENING = "umbee_noaa_evening";
 
     private static SharedPrefsManager sharedPrefsManager;
     private SharedPreferences.Editor editor;
@@ -137,6 +139,24 @@ public class SharedPrefsManager {
 
     public void setTripleThreshold3(int i) {
         editor.putInt(UMBEE_TRIPLE_THRESHOLD_3, i);
+        editor.commit();
+    }
+
+    public int getNoaaMorningPrecip() {
+        return settings.getInt(UMBEE_NOAA_MORNING, -1);
+    }
+
+    public void setNoaaMorningPrecip(int i) {
+        editor.putInt(UMBEE_NOAA_MORNING, i);
+        editor.commit();
+    }
+
+    public int getNoaaEveningPrecip() {
+        return settings.getInt(UMBEE_NOAA_EVENING, -1);
+    }
+
+    public void setNoaaEveningPrecip(int i) {
+        editor.putInt(UMBEE_NOAA_EVENING, i);
         editor.commit();
     }
 
