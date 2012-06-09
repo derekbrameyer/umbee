@@ -9,7 +9,7 @@ import android.os.IBinder;
 public class NotificationService extends IntentService {
 
     public NotificationService() {
-        super("UmbieNotificationService");
+        super("UmbeeNotificationService");
     }
 
     @Override

@@ -1,4 +1,12 @@
 <resources>
+    <style name="UmbeeTheme" parent="Theme.Sherlock.Light">
+        <item name="actionBarStyle">@style/UmbeeActionBar</item>
+        <item name="android:actionBarStyle">@style/UmbeeActionBar</item>
+        <item name="android:logo"></item>
+    </style>
+    <style name="UmbeeActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
+
+    </style>
     <style name="PreferenceTitleText">
         <item name="android:textSize">@dimen/pref_title_size</item>
         <item name="android:shadowDx">0.5</item>

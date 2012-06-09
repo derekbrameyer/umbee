@@ -2,7 +2,8 @@
 <resources>
     <color name="alert_example_top">#ffffff</color>
     <color name="alert_example_bottom">#cccccc</color>
-    <color name="custom_blue">#00edf2</color>
-    <color name="custom_red">#f20000</color>
-    <color name="custom_green">#55f200</color>
+    <color name="cornflower_blue">#659cef</color>
+    <color name="yellow">#ffff00</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>
