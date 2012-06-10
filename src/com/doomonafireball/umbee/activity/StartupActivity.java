@@ -328,7 +328,12 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onClick(View view) {
             WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true,
-                    new Handler());
+                    new Handler() {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            setUpPrecipViews();
+                        }
+                    });
             testNotifQuery.execute();
         }
     };
