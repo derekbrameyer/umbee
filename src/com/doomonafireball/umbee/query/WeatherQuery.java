@@ -82,7 +82,7 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         String errorMessage = noaaClient.getErrorMessage();
         int responseCode = noaaClient.getResponseCode();
         if (response != null) {
-            Log.d(MainApp.TAG, "Response: " + response);
+            Log.d(MainApp.TAG, "NOAA response: " + response);
             // Parse the response
             mNbd = XmlParser.parseNoaaByDay(response);
         }

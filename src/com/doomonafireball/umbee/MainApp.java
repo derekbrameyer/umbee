@@ -3,6 +3,8 @@ package com.doomonafireball.umbee;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibrary;
+
 import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,7 @@ public class MainApp extends Application {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000);
     }
 }
 
