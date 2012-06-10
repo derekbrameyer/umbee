@@ -27,7 +27,7 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
     private static final String NOAA_URL
             = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php";
 
-    private boolean mIsTestNotif;
+    private boolean mDisplayProgress;
     private boolean mCreateNotif;
     private Context mContext;
     private ProgressDialog mDialog;
@@ -35,18 +35,19 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
     private SharedPrefsManager mSPM;
     private Handler mHandler;
 
-    public WeatherQuery(Context ctx, boolean isTestNotif, boolean createNotif, Handler handler) {
+    public WeatherQuery(Context ctx, boolean displayProgress, boolean createNotif,
+            Handler handler) {
         SharedPrefsManager.initialize(ctx);
         mSPM = SharedPrefsManager.getInstance();
         this.mContext = ctx;
-        this.mIsTestNotif = isTestNotif;
+        this.mDisplayProgress = displayProgress;
         this.mCreateNotif = createNotif;
         this.mHandler = handler;
     }
 
     @Override
     protected void onPreExecute() {
-        if (mIsTestNotif) {
+        if (mDisplayProgress) {
             mDialog = new ProgressDialog(mContext);
             mDialog.setIndeterminate(true);
             mDialog.setMessage(mContext.getResources().getString(R.string.test_notif_fetching));
@@ -97,7 +98,7 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        if (mIsTestNotif) {
+        if (mDisplayProgress) {
             mDialog.dismiss();
         }
         // Persist data to SharedPrefs

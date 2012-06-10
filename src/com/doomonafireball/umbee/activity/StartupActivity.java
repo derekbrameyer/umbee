@@ -1,5 +1,6 @@
 package com.doomonafireball.umbee.activity;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -11,6 +12,7 @@ import com.doomonafireball.umbee.util.Refs;
 import com.doomonafireball.umbee.util.SharedPrefsManager;
 import com.doomonafireball.umbee.util.UmbeeTextUtils;
 import com.doomonafireball.umbee.util.UmbeeTimeUtils;
+import com.doomonafireball.umbee.util.UmbeeWidgetUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 
 import android.app.AlarmManager;
@@ -89,10 +91,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(MainApp.TAG, "onCreate");
         setContentView(R.layout.startup);
-
         mContext = this;
+
         mSharedPrefs.initialize(this);
         mSharedPrefs = SharedPrefsManager.getInstance();
 
@@ -113,6 +114,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         tripleThreshold2SB.setOnSeekBarChangeListener(triple2SBCL);
         tripleThreshold3SB.setOnSeekBarChangeListener(triple3SBCL);
         locationET.setOnEditorActionListener(locationETListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         boolean b = mSharedPrefs.getAdvancedOptions();
         if (b) {
@@ -121,6 +127,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             advancedOptionsContainerLL.setVisibility(View.GONE);
         }
 
+        setActionBarBackground();
         setUpPrecipViews();
         setUpPreferenceViews();
     }
@@ -320,7 +327,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     View.OnClickListener testNotificationCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true, new Handler());
+            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true,
+                    new Handler());
             testNotifQuery.execute();
         }
     };
@@ -432,23 +440,46 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         Log.d(MainApp.TAG, "Set alarmManager.setRepeating to: " + cal.getTime().toLocaleString());
     }
 
+    private void setActionBarBackground() {
+        if ((mSharedPrefs.getNoaaEveningPrecip() != -1)
+                && (mSharedPrefs.getNoaaMorningPrecip() != -1)) {
+            int evePrecip = mSharedPrefs.getNoaaEveningPrecip();
+            int morPrecip = mSharedPrefs.getNoaaMorningPrecip();
+            float evePercent = ((((float) evePrecip) / 100.0f));
+            float morPercent = ((((float) morPrecip) / 100.0f));
+            float percent = Math.max(evePercent, morPercent);
+            int color = UmbeeWidgetUtils.getBetweenColorByPercent(percent,
+                    getResources().getColor(R.color.cornflower_blue),
+                    getResources().getColor(R.color.midnight_blue));
+            ActionBar ab = getSupportActionBar();
+            ab.setBackgroundDrawable(UmbeeWidgetUtils.getActionBarDrawable(mContext, color));
+        }
+    }
+
     private void setUpPrecipViews() {
         if ((mSharedPrefs.getNoaaEveningPrecip() == -1)
                 || (mSharedPrefs.getNoaaMorningPrecip() == -1)) {
             // We haven't gotten any info yet.
-            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, true, new Handler() {
-                public void HandleMessage(Message msg) {
-                    setUpPrecipViews();
-                }
-            });
+            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
+                    new Handler() {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            setUpPrecipViews();
+                            setActionBarBackground();
+                        }
+                    });
             getWeatherQuery.execute();
         } else {
             LayoutInflater li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             View precipNoaaVW = li.inflate(R.layout.precip_noaa, null);
             TextView morningPrecipTV = (TextView) precipNoaaVW.findViewById(R.id.TV_morning_precip);
             TextView eveningPrecipTV = (TextView) precipNoaaVW.findViewById(R.id.TV_evening_precip);
-            morningPrecipTV.setText(String.format(getResources().getString(R.string.dynamic_int_percentage), mSharedPrefs.getNoaaMorningPrecip()));
-            eveningPrecipTV.setText(String.format(getResources().getString(R.string.dynamic_int_percentage), mSharedPrefs.getNoaaEveningPrecip()));
+            morningPrecipTV.setText(
+                    String.format(getResources().getString(R.string.dynamic_int_percentage),
+                            mSharedPrefs.getNoaaMorningPrecip()));
+            eveningPrecipTV.setText(
+                    String.format(getResources().getString(R.string.dynamic_int_percentage),
+                            mSharedPrefs.getNoaaEveningPrecip()));
             todaysPrecipContainerFL.removeAllViews();
             todaysPrecipContainerFL.addView(precipNoaaVW);
         }
