@@ -22,6 +22,7 @@ public class MainApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "onCreate");
+        LocationLibrary.initialiseLibrary(getBaseContext());
         OAKImageLoader.initialize(this, OAKImageLoader.PREFER_SD);
         Injector i = RoboGuice.getBaseApplicationInjector(this);
         mDataStore = i.getInstance(Datastore.class);
@@ -30,7 +31,6 @@ public class MainApp extends Application {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        LocationLibrary.initialiseLibrary(getBaseContext(), 60 * 1000, 2 * 60 * 1000);
     }
 }
 

@@ -7,6 +7,7 @@ import com.littlefluffytoys.littlefluffylocationlibrary.LocationLibraryConstants
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 
 /**
@@ -22,7 +23,7 @@ public class LocationReceiver extends BroadcastReceiver {
                 LocationLibraryConstants.LOCATION_BROADCAST_EXTRA_LOCATIONINFO);
 
         // Translate the LocationInfo to zip code and persist
-        ZipCodeQuery zcq = new ZipCodeQuery(context, locationInfo.lastLat, locationInfo.lastLong);
+        ZipCodeQuery zcq = new ZipCodeQuery(context, locationInfo.lastLat, locationInfo.lastLong, false, false, new Handler());
         zcq.execute();
     }
 }

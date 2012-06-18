@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:oak="http://oak/oak/schema"
+    android:layout_width="fill_parent"
+    android:layout_height="64dp"
+    android:orientation="vertical">
+    <oak.TextViewWithFont
+        android:id="@+id/TV_list_item"
+        android:layout_width="fill_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="@color/abs__primary_text_holo_light"
+        android:textSize="18sp"
+        oak:font="Roboto.ttf"/>
+</LinearLayout>

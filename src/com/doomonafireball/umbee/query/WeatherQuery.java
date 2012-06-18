@@ -34,9 +34,11 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
     private NoaaByDay mNbd = new NoaaByDay();
     private SharedPrefsManager mSPM;
     private Handler mHandler;
+    private String response;
+    private String errorMessage;
+    private int responseCode;
 
-    public WeatherQuery(Context ctx, boolean displayProgress, boolean createNotif,
-            Handler handler) {
+    public WeatherQuery(Context ctx, boolean displayProgress, boolean createNotif, Handler handler) {
         SharedPrefsManager.initialize(ctx);
         mSPM = SharedPrefsManager.getInstance();
         this.mContext = ctx;
@@ -79,9 +81,9 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String response = noaaClient.getResponse();
-        String errorMessage = noaaClient.getErrorMessage();
-        int responseCode = noaaClient.getResponseCode();
+        response = noaaClient.getResponse();
+        errorMessage = noaaClient.getErrorMessage();
+        responseCode = noaaClient.getResponseCode();
         if (response != null) {
             Log.d(MainApp.TAG, "NOAA response: " + response);
             // Parse the response

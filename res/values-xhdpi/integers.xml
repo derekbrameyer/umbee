@@ -1,0 +1,4 @@
+<resources>
+    <integer name="sun_radius">90</integer>
+    <integer name="cb_sun_radius">25</integer>
+</resources>

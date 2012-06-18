@@ -7,6 +7,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.doomonafireball.umbee.MainApp;
 import com.doomonafireball.umbee.R;
 import com.doomonafireball.umbee.query.WeatherQuery;
+import com.doomonafireball.umbee.query.ZipCodeQuery;
 import com.doomonafireball.umbee.receiver.NotificationReceiver;
 import com.doomonafireball.umbee.util.Refs;
 import com.doomonafireball.umbee.util.SharedPrefsManager;
@@ -14,14 +15,18 @@ import com.doomonafireball.umbee.util.UmbeeTextUtils;
 import com.doomonafireball.umbee.util.UmbeeTimeUtils;
 import com.doomonafireball.umbee.util.UmbeeWidgetUtils;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
+import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +41,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -55,37 +61,39 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.CB_enable_smart_location) CheckBox enableLocationUpdatesCB;
     @InjectView(R.id.CB_custom_threshold) CheckBox customThresholdCB;
     @InjectView(R.id.ET_location) CancelEditText locationET;
-    @InjectView(R.id.BTN_advanced_options) Button advancedOptionsBTN;
-    @InjectView(R.id.BTN_update_time) Button updateTimeBTN;
-    @InjectView(R.id.BTN_alert_type) Button alertTypeBTN;
-    @InjectView(R.id.BTN_test_notif) Button testNotificationBTN;
-    //@InjectView(R.id.TV_alert_example_big) TextView alertExampleBigTV;
-    //@InjectView(R.id.TV_alert_example_small) TextView alertExampleSmallTV;
-    //@InjectView(R.id.TV_alert_example_small2) TextView alertExampleSmall2TV;
     @InjectView(R.id.TV_single_threshold) TextView singleThresholdTV;
     @InjectView(R.id.TV_triple_threshold) TextView tripleThresholdTV;
     @InjectView(R.id.TV_triple_threshold2) TextView tripleThreshold2TV;
     @InjectView(R.id.TV_triple_threshold3) TextView tripleThreshold3TV;
+    @InjectView(R.id.TV_update_time) TextView updateTimeTV;
+    @InjectView(R.id.TV_alert_type) TextView alertTypeTV;
     @InjectView(R.id.SB_single_threshold) SeekBar singleThresholdSB;
     @InjectView(R.id.SB_triple_threshold_1) SeekBar tripleThreshold1SB;
     @InjectView(R.id.SB_triple_threshold_2) SeekBar tripleThreshold2SB;
     @InjectView(R.id.SB_triple_threshold_3) SeekBar tripleThreshold3SB;
+    @InjectView(R.id.RL_advanced_options_container) RelativeLayout advancedOptionsRL;
     @InjectView(R.id.LL_single_threshold_container) LinearLayout singleThresholdLL;
     @InjectView(R.id.LL_triple_threshold_container) LinearLayout tripleThresholdLL;
     @InjectView(R.id.LL_advanced_options_container) LinearLayout advancedOptionsContainerLL;
+    @InjectView(R.id.RL_alert_type_container) RelativeLayout alertTypeContainerRL;
+    @InjectView(R.id.LL_update_time) LinearLayout updateTimeLL;
+    @InjectView(R.id.RL_test_notif) RelativeLayout testNotifRL;
+    @InjectView(R.id.RL_smart_location_container) RelativeLayout smartLocationContainerRL;
+    @InjectView(R.id.RL_enable_container) RelativeLayout enableContainerRL;
     @InjectView(R.id.RL_threshold_container) RelativeLayout thresholdCheckRL;
     @InjectView(R.id.FL_todays_precip_container) FrameLayout todaysPrecipContainerFL;
+    @InjectView(R.id.IV_advanced_options_icon) ImageView advancedOptionsIconIV;
 
     SharedPrefsManager mSharedPrefs;
     Context mContext;
     ArrayAdapter<CharSequence> weatherApiAdapter;
-    ArrayAdapter<CharSequence> alertTypeAdapter;
     String[] weatherApiOptions;
     String[] alertTypeOptions;
 
     private int bar1Progress;
     private int bar2Progress;
     private int bar3Progress;
+    private ZipCodeQuery mZcq;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,42 +102,72 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         setContentView(R.layout.startup);
         mContext = this;
 
-        mSharedPrefs.initialize(this);
+        SharedPrefsManager.initialize(this);
         mSharedPrefs = SharedPrefsManager.getInstance();
 
-        alertTypeAdapter = ArrayAdapter.createFromResource(this, R.array.alert_type_array,
-                android.R.layout.simple_dropdown_item_1line);
-        alertTypeAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         alertTypeOptions = getResources().getStringArray(R.array.alert_type_array);
 
         enableUmbeeCB.setOnCheckedChangeListener(enableCCL);
         customThresholdCB.setOnCheckedChangeListener(customThresholdCCL);
         enableLocationUpdatesCB.setOnCheckedChangeListener(enableLocationUpdatesCCL);
-        advancedOptionsBTN.setOnClickListener(advancedOptionsCL);
-        updateTimeBTN.setOnClickListener(updateTimeCL);
-        alertTypeBTN.setOnClickListener(alertTypeCL);
-        testNotificationBTN.setOnClickListener(testNotificationCL);
+        advancedOptionsRL.setOnClickListener(advancedOptionsCL);
+        updateTimeLL.setOnClickListener(updateTimeCL);
+        alertTypeContainerRL.setOnClickListener(alertTypeCL);
+        testNotifRL.setOnClickListener(testNotificationCL);
         singleThresholdSB.setOnSeekBarChangeListener(singleSBCL);
         tripleThreshold1SB.setOnSeekBarChangeListener(triple1SBCL);
         tripleThreshold2SB.setOnSeekBarChangeListener(triple2SBCL);
         tripleThreshold3SB.setOnSeekBarChangeListener(triple3SBCL);
         locationET.setOnEditorActionListener(locationETListener);
+
+        enableContainerRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enableUmbeeCB.setChecked(!enableUmbeeCB.isChecked());
+            }
+        });
+
+        smartLocationContainerRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enableLocationUpdatesCB.setChecked(!enableLocationUpdatesCB.isChecked());
+            }
+        });
+
+        thresholdCheckRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customThresholdCB.setChecked(!customThresholdCB.isChecked());
+            }
+        });
+
+        setAdvancedOptionsVisibility();
+        setActivityColors();
+        setUpPrecipViews();
+        setUpPreferenceViews();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+    }
 
-        boolean b = mSharedPrefs.getAdvancedOptions();
-        if (b) {
-            advancedOptionsContainerLL.setVisibility(View.VISIBLE);
-        } else {
-            advancedOptionsContainerLL.setVisibility(View.GONE);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Handle AlertTypeActivity return correctly
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AlertTypeActivity.START_ALERT_TYPE_ACTIVITY_FOR_RESULT:
+                    int selectedAlert = data.getIntExtra(AlertTypeActivity.SELECTED_ALERT, 0);
+                    String selectedAlertText = data.getStringExtra(AlertTypeActivity.SELECTED_ALERT_TEXT);
+                    int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
+                    mSharedPrefs.setAlertType(selectedAlertType);
+                    alertTypeTV.setText(selectedAlertText);
+                    setUpPreferenceViews();
+                    setUpThresholdViews();
+                    break;
+            }
         }
-
-        setActionBarBackground();
-        setUpPrecipViews();
-        setUpPreferenceViews();
     }
 
     @Override
@@ -316,6 +354,15 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                             Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
                     Toast.makeText(mContext, "Zip code saved!", Toast.LENGTH_SHORT).show();
+                    WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
+                            new Handler() {
+                                @Override
+                                public void handleMessage(Message msg) {
+                                    setUpPrecipViews();
+                                    setActivityColors();
+                                }
+                            });
+                    getWeatherQuery.execute();
                 } else {
                     Toast.makeText(mContext, "Not a valid zip code.", Toast.LENGTH_SHORT).show();
                 }
@@ -331,6 +378,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     new Handler() {
                         @Override
                         public void handleMessage(Message msg) {
+                            setActivityColors();
                             setUpPrecipViews();
                         }
                     });
@@ -343,60 +391,61 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         public void onClick(View view) {
             boolean b = mSharedPrefs.getAdvancedOptions();
             mSharedPrefs.setAdvancedOptions(!b);
-            if (b) {
-                advancedOptionsContainerLL.setVisibility(View.GONE);
-            } else {
-                advancedOptionsContainerLL.setVisibility(View.VISIBLE);
-            }
+            setAdvancedOptionsVisibility();
         }
     };
 
     View.OnClickListener updateTimeCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            TimePickerDialog dialog = new TimePickerDialog(mContext,
-                    new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-                            mSharedPrefs.setUpdateTime(
-                                    UmbeeTimeUtils.timeOfDayFromTimePicker(hourOfDay, minute));
-                            updateTimeBTN.setText(
-                                    UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
-                            startUmbeeService();
-                        }
-                    },
-                    UmbeeTimeUtils.hourOfDayFromInt(mSharedPrefs.getUpdateTime()),
-                    UmbeeTimeUtils.minuteFromInt(mSharedPrefs.getUpdateTime()),
-                    false);
-            dialog.show();
+            if (updateTimeLL.isEnabled()) {
+                TimePickerDialog dialog = new TimePickerDialog(mContext,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                                mSharedPrefs.setUpdateTime(
+                                        UmbeeTimeUtils.timeOfDayFromTimePicker(hourOfDay, minute));
+                                updateTimeTV.setText(
+                                        UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+                                startUmbeeService();
+                            }
+                        },
+                        UmbeeTimeUtils.hourOfDayFromInt(mSharedPrefs.getUpdateTime()),
+                        UmbeeTimeUtils.minuteFromInt(mSharedPrefs.getUpdateTime()),
+                        false);
+                dialog.show();
+            }
         }
     };
 
     View.OnClickListener alertTypeCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+            // TODO Dispatch AlertTypeActivity startActivityForResult()
+            //Intent alertTypeIntent = new Intent();
+            //alertTypeIntent.setClass(StartupActivity.this, AlertTypeActivity.class);
+            //alertTypeIntent.putExtra(AlertTypeActivity.ALERT_TYPE_OPTIONS, alertTypeOptions);
+            //startActivityForResult(alertTypeIntent, AlertTypeActivity.START_ALERT_TYPE_ACTIVITY_FOR_RESULT);
 
+            Bundle alertBundle = new Bundle();
+            alertBundle.putStringArray(AlertTypeActivity.ALERT_TYPE_OPTIONS, alertTypeOptions);
+
+            AlertTypeActivity d = new AlertTypeActivity(mContext, alertBundle, new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    Bundle msgData = msg.getData();
+                    if (msgData != null) {
+                        int selectedAlert = msgData.getInt(AlertTypeActivity.SELECTED_ALERT, 0);
+                        String selectedAlertText = msgData.getString(AlertTypeActivity.SELECTED_ALERT_TEXT);
+                        int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
+                        mSharedPrefs.setAlertType(selectedAlertType);
+                        alertTypeTV.setText(selectedAlertText);
+                        setUpPreferenceViews();
+                        setUpThresholdViews();
+                    }
                 }
             });
-            builder.setSingleChoiceItems(alertTypeAdapter, 0,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            int selectedAlertType = i + Refs.ALERT_BASE;
-                            mSharedPrefs.setAlertType(selectedAlertType);
-                            alertTypeBTN.setText(alertTypeOptions[i]);
-                            dialogInterface.dismiss();
-                            setUpPreferenceViews();
-                            setUpThresholdViews();
-                        }
-                    });
-            builder.setTitle("Alert Type");
-            AlertDialog alert = builder.create();
-            alert.show();
+            d.show();
         }
     };
 
@@ -445,6 +494,41 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         Log.d(MainApp.TAG, "Set alarmManager.setRepeating to: " + cal.getTime().toLocaleString());
     }
 
+    private void setAdvancedOptionsVisibility() {
+        boolean b = mSharedPrefs.getAdvancedOptions();
+        if (b) {
+            advancedOptionsContainerLL.setVisibility(View.VISIBLE);
+            advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_close_holo_light));
+        } else {
+            advancedOptionsContainerLL.setVisibility(View.GONE);
+            advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_open_holo_light));
+        }
+    }
+
+    private void setActivityColors() {
+        setWindowBackgroundGradient();
+        setActionBarBackground();
+    }
+
+    private void setWindowBackgroundGradient() {
+        if ((mSharedPrefs.getNoaaEveningPrecip() != -1)
+                && (mSharedPrefs.getNoaaMorningPrecip() != -1)) {
+            int evePrecip = mSharedPrefs.getNoaaEveningPrecip();
+            int morPrecip = mSharedPrefs.getNoaaMorningPrecip();
+            float evePercent = ((((float) evePrecip) / 100.0f));
+            float morPercent = ((((float) morPrecip) / 100.0f));
+            float percent = Math.max(evePercent, morPercent);
+            int color = UmbeeWidgetUtils.getBetweenColorByPercent(percent,
+                    getResources().getColor(R.color.cornflower_blue),
+                    getResources().getColor(R.color.midnight_blue));
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
+            gd.setCornerRadius(0f);
+            this.getWindow().setBackgroundDrawable(gd);
+        }
+    }
+
     private void setActionBarBackground() {
         if ((mSharedPrefs.getNoaaEveningPrecip() != -1)
                 && (mSharedPrefs.getNoaaMorningPrecip() != -1)) {
@@ -457,12 +541,18 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     getResources().getColor(R.color.cornflower_blue),
                     getResources().getColor(R.color.midnight_blue));
             ActionBar ab = getSupportActionBar();
-            ab.setBackgroundDrawable(UmbeeWidgetUtils.getActionBarDrawable(mContext, color));
+            Drawable d = UmbeeWidgetUtils.getActionBarDrawable(mContext, color);
+            ab.setBackgroundDrawable(d);
+            ab.hide();
+            ab.show();
         }
     }
 
     private void setUpPrecipViews() {
-        if ((mSharedPrefs.getNoaaEveningPrecip() == -1)
+        if (((mSharedPrefs.getNoaaEveningPrecip() == -1)
+                || (mSharedPrefs.getNoaaMorningPrecip() == -1)) && mSharedPrefs.getLocation().equals("")) {
+            // We haven't gotten any info yet, and we don't have a zip code, so we can't do anything.
+        } else if ((mSharedPrefs.getNoaaEveningPrecip() == -1)
                 || (mSharedPrefs.getNoaaMorningPrecip() == -1)) {
             // We haven't gotten any info yet.
             WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
@@ -470,7 +560,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                         @Override
                         public void handleMessage(Message msg) {
                             setUpPrecipViews();
-                            setActionBarBackground();
+                            setActivityColors();
                         }
                     });
             getWeatherQuery.execute();
@@ -497,8 +587,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         boolean isUmbeeEnabled = mSharedPrefs.getEnabled();
         enableUmbeeCB.setChecked(isUmbeeEnabled);
         locationET.setEnabled(isUmbeeEnabled);
-        updateTimeBTN.setEnabled(isUmbeeEnabled);
-        alertTypeBTN.setEnabled(isUmbeeEnabled);
+        updateTimeLL.setEnabled(isUmbeeEnabled);
+        alertTypeContainerRL.setEnabled(isUmbeeEnabled);
         customThresholdCB.setEnabled(isUmbeeEnabled);
         customThresholdCB.setClickable(isUmbeeEnabled);
         singleThresholdSB.setEnabled(isUmbeeEnabled);
@@ -513,9 +603,34 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             locationET.append(mSharedPrefs.getLocation());
         }
 
-        updateTimeBTN.setText(UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+        if (mSharedPrefs.getLocation().equals("") && mZcq == null) {
+            // Check for latest existing location
+            LocationInfo latestInfo = new LocationInfo(mContext);
+            mZcq = new ZipCodeQuery(mContext, latestInfo.lastLat, latestInfo.lastLong, true, true, new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    locationET.append(mSharedPrefs.getLocation());
+                    if (mSharedPrefs.getLocation().equals("")) {
+                        Toast.makeText(mContext, getResources().getString(R.string.please_set_location), Toast.LENGTH_SHORT).show();
+                    } else {
+                        WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
+                                new Handler() {
+                                    @Override
+                                    public void handleMessage(Message msg) {
+                                        setUpPrecipViews();
+                                        setActivityColors();
+                                    }
+                                });
+                        getWeatherQuery.execute();
+                    }
+                }
+            });
+            mZcq.execute();
+        }
 
-        alertTypeBTN.setText(alertTypeOptions[mSharedPrefs.getAlertType() - Refs.ALERT_BASE]);
+        updateTimeTV.setText(UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+
+        alertTypeTV.setText(alertTypeOptions[mSharedPrefs.getAlertType() - Refs.ALERT_BASE]);
 
         switch (mSharedPrefs.getAlertType()) {
             case Refs.ALERT_SIMPLE:

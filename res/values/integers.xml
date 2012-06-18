@@ -2,4 +2,6 @@
     <integer name="preference_button_weight">4</integer>
     <integer name="preference_button_text_weight">6</integer>
     <integer name="preference_sum">10</integer>
+    <integer name="sun_radius">60</integer>
+    <integer name="cb_sun_radius">20</integer>
 </resources>

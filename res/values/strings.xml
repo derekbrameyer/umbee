@@ -6,7 +6,7 @@
     <string name="service_name">Umbee Service</string>
     <string name="enable_umbee">Enable umbee</string>
     <string name="umbee_lowercase">umbee</string>
-    <string name="location">Zip Code</string>
+    <string name="location">ZIP code</string>
     <string name="location_hint">22901</string>
     <string name="update_time">Update time</string>
     <string name="alert_type">Alert type</string>
@@ -30,11 +30,13 @@
     <string name="alert_example_percent_small2">blahblahblah</string>
     <string name="alert_example">Alert Example</string>
     <string name="restart_umbee">Restart umbee</string>
-    <string name="advanced_options">Advanced Options</string>
-    <string name="test_notification">Get Test Notification</string>
+    <string name="advanced_options">Advanced options</string>
+    <string name="test_notification">Get today\'s alert</string>
     <string name="triple_threshold_think">umbee will think you...</string>
     <string name="test_notif_fetching">Fetching current weather...</string>
-    <string name="enable_location_updates">Smart Location Updates</string>
+    <string name="zip_code_fetching">Setting location...</string>
+    <string name="please_set_location">Please set your zip code!</string>
+    <string name="enable_location_updates">Smart location updates</string>
     <string name="enable_location_updates_sub">(umbee will update its location while on-the-move.)</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_about">About</string>

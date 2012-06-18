@@ -1,5 +1,5 @@
 <resources>
-    <style name="UmbeeTheme" parent="Theme.Sherlock.Light">
+    <style name="UmbeeTheme" parent="Theme.Sherlock.Light.ForceOverflow">
         <item name="actionBarStyle">@style/UmbeeActionBar</item>
         <item name="android:actionBarStyle">@style/UmbeeActionBar</item>
         <item name="android:windowBackground">@drawable/window_background</item>
@@ -8,6 +8,9 @@
         <item name="android:selectableItemBackground">@drawable/action_bar_item_selector</item>
         <item name="android:checkboxStyle">@style/UmbeeCheckBox</item>
         <item name="android:seekBarStyle">@style/UmbeeSeekBar</item>
+        <item name="android:editTextStyle">@style/UmbeeEditText</item>
+        <item name="actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
+        <item name="android:actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
     </style>
     <style name="UmbeeActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
         <item name="actionBarSize">48dp</item>
@@ -19,11 +22,40 @@
         <item name="background">@drawable/action_bar_background</item>
         <item name="android:background">@drawable/action_bar_background</item>
     </style>
+    <style name="UmbeeDialog" parent="Theme.Sherlock.Light" >
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle.Sherlock.Light</item>
+        <item name="android:windowBackground">@drawable/abs__dialog_full_holo_light</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+
+        <item name="android:colorBackgroundCacheHint">@null</item>
+
+        <item name="android:textColorPrimary">@color/abs__primary_text_holo_dark</item>
+        <item name="android:textColorPrimaryInverse">@color/abs__primary_text_holo_light</item>
+
+        <item name="windowMinWidthMajor">@dimen/abs__dialog_min_width_major</item>
+        <item name="windowMinWidthMinor">@dimen/abs__dialog_min_width_minor</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowContentOverlay">@null</item>
+    </style>
+    <style name="UmbeeOverflowButton" parent="@style/Widget.Sherlock.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu_moreoverflow_normal_holo_dark</item>
+    </style>
     <style name="UmbeeCheckBox" parent="android:Widget.CompoundButton.CheckBox">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:background">@drawable/umbee_check_box_selector</item>
         <item name="android:button">@null</item>
+        <item name="android:layout_marginRight">2dp</item>
     </style>
     <style name="UmbeeSeekBar" parent="android:Widget.SeekBar">
         <item name="android:indeterminateOnly">false</item>
@@ -41,6 +73,25 @@
         <item name="android:paddingLeft">16dip</item>
         <item name="android:paddingRight">16dip</item>
     </style>
+    <style name="UmbeeEditText">
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/edit_text_holo_light</item>
+        <!--<item name="android:textAppearance">?attr/textAppearanceMediumInverse</item>-->
+        <item name="android:textColor">@color/primary_text_holo_light</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="PreferenceContainer">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/pref_container_height</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
     <style name="PreferenceTitleText">
         <item name="android:textSize">@dimen/pref_title_size</item>
         <item name="android:shadowDx">0.5</item>
@@ -49,6 +100,7 @@
         <item name="android:shadowColor">@android:color/white</item>
     </style>
     <style name="PreferenceSubtitleText">
+        <item name="android:textColor">@color/pref_subtitle</item>
         <item name="android:textSize">@dimen/pref_subtitle_size</item>
         <item name="android:shadowDx">0.5</item>
         <item name="android:shadowDy">0.5</item>

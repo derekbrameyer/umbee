@@ -18,6 +18,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPrefsManager.initialize(context);
         SharedPrefsManager spm = SharedPrefsManager.getInstance();
 
         Calendar currCal = new GregorianCalendar();

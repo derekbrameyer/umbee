@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.doomonafireball.umbee"
-        android:versionCode="1"
-        android:versionName="1.0-SNAPSHOT">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.doomonafireball.umbee"
+    android:versionCode="1"
+    android:versionName="1.0-SNAPSHOT">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -11,36 +11,41 @@
     <uses-feature android:name="android.hardware.location" android:required="true"/>
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
     <uses-sdk
-            android:minSdkVersion="8"
-            android:targetSdkVersion="14"/>
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15"/>
     <application
-            android:name=".MainApp"
-            android:icon="@drawable/icon"
-            android:label="@string/app_name"
-            android:theme="@style/UmbeeTheme"
-            android:orientation="vertical">
+        android:name=".MainApp"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/UmbeeTheme"
+        android:orientation="vertical">
         <activity
-                android:name=".activity.StartupActivity"
-                android:windowSoftInputMode="stateHidden">
+            android:name=".activity.StartupActivity"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!--<activity-->
+            <!--android:name=".activity.AlertTypeActivity"-->
+            <!--android:label="@string/alert_type"-->
+            <!--android:logo="@drawable/ic_menu_notifications"-->
+            <!--android:theme="@style/UmbeeDialog"/>-->
         <service
-                android:name="com.littlefluffytoys.littlefluffylocationlibrary.LocationBroadcastService"/>
+            android:name="com.littlefluffytoys.littlefluffylocationlibrary.LocationBroadcastService"/>
         <receiver
-                android:name="com.littlefluffytoys.littlefluffylocationlibrary.StartupBroadcastReceiver"
-                android:exported="true">
+            android:name="com.littlefluffytoys.littlefluffylocationlibrary.StartupBroadcastReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
         <receiver
-                android:name="com.littlefluffytoys.littlefluffylocationlibrary.PassiveLocationChangedReceiver"
-                android:exported="true"/>
+            android:name="com.littlefluffytoys.littlefluffylocationlibrary.PassiveLocationChangedReceiver"
+            android:exported="true"/>
         <service
-                android:name=".service.NotificationService"/>
+            android:name=".service.NotificationService"/>
         <receiver android:name=".receiver.LocationReceiver">
             <intent-filter>
                 <action android:name="com.littlefluffytoys.littlefluffylocationlibrary.LOCATION_CHANGED"
@@ -48,13 +53,13 @@
             </intent-filter>
         </receiver>
         <receiver
-                android:name=".receiver.BootReceiver">
+            android:name=".receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
         <receiver
-                android:name=".receiver.NotificationReceiver"/>
+            android:name=".receiver.NotificationReceiver"/>
     </application>
 </manifest>
 
