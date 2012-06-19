@@ -9,6 +9,8 @@ import com.doomonafireball.umbee.util.UmbeeNotifUtils;
 import com.doomonafireball.umbee.util.UmbeeTimeUtils;
 import com.doomonafireball.umbee.util.XmlParser;
 
+import org.json.JSONException;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -72,7 +74,7 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         // Get NOAA results
         RestClient noaaClient = new RestClient(NOAA_URL);
         noaaClient.AddParam("format", "24 hourly");
-        noaaClient.AddParam("numDays", "1");
+        noaaClient.AddParam("numDays", "6");
         noaaClient.AddParam("zipCodeList", mSPM.getLocation());
         noaaClient.AddParam("startDate",
                 UmbeeTimeUtils.formatNoaaForCalendar(new GregorianCalendar()));
@@ -104,8 +106,11 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
             mDialog.dismiss();
         }
         // Persist data to SharedPrefs
-        mSPM.setNoaaMorningPrecip(mNbd.mPop.morningProbability);
-        mSPM.setNoaaEveningPrecip(mNbd.mPop.eveningProbability);
+        try {
+            mSPM.setNoaaByDayString(mNbd.toJsonString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         if (mCreateNotif) {
             // Create notification
             UmbeeNotifUtils.createNotification(mContext, mNbd);

@@ -7,8 +7,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Pair;
+
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -53,6 +56,7 @@ public class XmlParser {
         private boolean inNameTag = false;
         private boolean inValueTag = false;
         private boolean hasGottenValue1 = false;
+        private int value1 = 0;
 
         private NoaaByDay myNbd = new NoaaByDay();
 
@@ -64,6 +68,7 @@ public class XmlParser {
         public void startDocument() throws SAXException {
             this.myNbd = new NoaaByDay();
             this.myNbd.mPop = new NoaaByDay.NoaaProbabilityOfPrecipitation();
+            this.myNbd.mPop.probabilities = new ArrayList<Pair<Integer, Integer>>();
         }
 
         @Override
@@ -98,7 +103,6 @@ public class XmlParser {
                 this.inNameTag = false;
             } else if (localName.equals("value") && this.inPrecipTag) {
                 this.inValueTag = false;
-                this.hasGottenValue1 = true;
             }
         }
 
@@ -108,9 +112,14 @@ public class XmlParser {
                 this.myNbd.mPop.name = new String(ch).substring(start, length);
             } else if (this.inValueTag) {
                 if (!this.hasGottenValue1) {
-                    this.myNbd.mPop.morningProbability = Integer.parseInt(new String(ch).substring(start, length));
+                    this.value1 = Integer.parseInt(new String(ch).substring(start, length));
+                    this.hasGottenValue1 = true;
                 } else {
-                    this.myNbd.mPop.eveningProbability = Integer.parseInt(new String(ch).substring(start, length));
+                    //this.myNbd.mPop.eveningProbability = Integer.parseInt(new String(ch).substring(start, length));
+                    Pair<Integer, Integer> pair = new Pair<Integer, Integer>(value1,
+                            Integer.parseInt(new String(ch).substring(start, length)));
+                    this.myNbd.mPop.probabilities.add(pair);
+                    this.hasGottenValue1 = false;
                 }
             }
         }

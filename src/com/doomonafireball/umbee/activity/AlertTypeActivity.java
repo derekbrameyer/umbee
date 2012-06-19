@@ -62,7 +62,9 @@ public class AlertTypeActivity extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        //requestWindowFeature(Window.FEATURE_LEFT_ICON);
+
+        requestWindowFeature((int) Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.alert_type);
 
@@ -79,8 +81,8 @@ public class AlertTypeActivity extends Dialog {
         alertTypeAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);*/
         //alertTypeOptions = getResources().getStringArray(R.array.alert_type_array);
 
-        setTitle(mContext.getString(R.string.alert_type));
-        setFeatureDrawable(Window.FEATURE_LEFT_ICON, mContext.getResources().getDrawable(R.drawable.ic_menu_notifications));
+        //setTitle(mContext.getString(R.string.alert_type));
+        //setFeatureDrawable(Window.FEATURE_LEFT_ICON, mContext.getResources().getDrawable(R.drawable.ic_menu_notifications));
         getWindow().setBackgroundDrawableResource(R.drawable.abs__dialog_full_holo_light);
 
         itemsLV = (ListView) findViewById(R.id.LV_items);

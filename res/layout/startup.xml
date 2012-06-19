@@ -18,7 +18,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp">
+            <android.support.v4.view.ViewPager
+                android:id="@+id/VP_todays_precip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
         <RelativeLayout
             style="@style/PreferenceContainer"
             android:id="@+id/RL_enable_container"

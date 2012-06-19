@@ -22,7 +22,9 @@ public class UmbeeNotifUtils {
         int icon = R.drawable.icon;
         long when = System.currentTimeMillis();
         int type = mSPM.getAlertType();
-        int highestPercentage = Math.max(nbd.mPop.morningProbability, nbd.mPop.eveningProbability);
+        int morPrecip = nbd.mPop.probabilities.get(0).second;
+        int evePrecip = nbd.mPop.probabilities.get(0).first;
+        int highestPercentage = Math.max(morPrecip, evePrecip);
         CharSequence ticker = "", title = "", text = "";
         switch (type) {
             case Refs.ALERT_SIMPLE:
@@ -37,9 +39,9 @@ public class UmbeeNotifUtils {
                     ticker = ctx.getString(R.string.umbee_thinks_no);
                     title = ctx.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, nbd.mPop.morningProbability)
+                text = getSimpleMorningText(ctx, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, nbd.mPop.eveningProbability);
+                        + getSimpleEveningText(ctx, evePrecip);
                 break;
             case Refs.ALERT_COMPLEX:
                 int t1 = 25;
@@ -67,9 +69,9 @@ public class UmbeeNotifUtils {
                     ticker = ctx.getString(R.string.umbee_thinks_no);
                     title = ctx.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, nbd.mPop.morningProbability)
+                text = getSimpleMorningText(ctx, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, nbd.mPop.eveningProbability);
+                        + getSimpleEveningText(ctx, evePrecip);
                 break;
             case Refs.ALERT_PERCENT:
                 // Not in use
@@ -83,9 +85,9 @@ public class UmbeeNotifUtils {
                     ticker = ctx.getString(R.string.umbee_thinks_no);
                     title = ctx.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, nbd.mPop.morningProbability)
+                text = getSimpleMorningText(ctx, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, nbd.mPop.eveningProbability);
+                        + getSimpleEveningText(ctx, evePrecip);
                 break;
         }
 

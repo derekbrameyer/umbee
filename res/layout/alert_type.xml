@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:oak="http://oak/oak/schema"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/RL_title_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/abs__ab_transparent_light_holo"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+        <ImageView
+            android:id="@+id/IV_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_menu_notifications"/>
+        <oak.TextViewWithFont
+            android:id="@+id/TV_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/IV_icon"
+            android:layout_centerVertical="true"
+            android:text="@string/alert_type"
+            android:textSize="20dp"
+            android:textColor="@color/abs__holo_blue_light"
+            oak:font="Roboto.ttf"/>
+    </RelativeLayout>
     <ListView
         android:id="@+id/LV_items"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/RL_title_container"
         android:cacheColorHint="#00000000"
         android:listSelector="@drawable/list_selector_holo_light"/>
 </RelativeLayout>

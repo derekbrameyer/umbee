@@ -1,6 +1,7 @@
 package com.doomonafireball.umbee.util;
 
 import com.doomonafireball.umbee.R;
+import com.doomonafireball.umbee.model.NoaaByDay;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,8 +23,7 @@ public class SharedPrefsManager {
     private static String UMBEE_TRIPLE_THRESHOLD_3 = "umbee_triple_threshold_3";
     private static String UMBEE_ENABLE_LOCATION_UPDATE = "umbee_enable_location_update";
     private static String UMBEE_ADVANCED_OPTIONS = "umbee_advanced_options";
-    private static String UMBEE_NOAA_MORNING = "umbee_noaa_morning";
-    private static String UMBEE_NOAA_EVENING = "umbee_noaa_evening";
+    private static String UMBEE_NOAA_OBJECT = "umbee_noaa_object";
 
     private static SharedPrefsManager sharedPrefsManager;
     private SharedPreferences.Editor editor;
@@ -142,22 +142,12 @@ public class SharedPrefsManager {
         editor.commit();
     }
 
-    public int getNoaaMorningPrecip() {
-        return settings.getInt(UMBEE_NOAA_MORNING, -1);
+    public String getNoaaByDayString() {
+        return settings.getString(UMBEE_NOAA_OBJECT, "");
     }
 
-    public void setNoaaMorningPrecip(int i) {
-        editor.putInt(UMBEE_NOAA_MORNING, i);
+    public void setNoaaByDayString(String s) {
+        editor.putString(UMBEE_NOAA_OBJECT, s);
         editor.commit();
     }
-
-    public int getNoaaEveningPrecip() {
-        return settings.getInt(UMBEE_NOAA_EVENING, -1);
-    }
-
-    public void setNoaaEveningPrecip(int i) {
-        editor.putInt(UMBEE_NOAA_EVENING, i);
-        editor.commit();
-    }
-
 }
