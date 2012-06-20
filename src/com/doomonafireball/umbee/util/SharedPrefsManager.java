@@ -24,6 +24,7 @@ public class SharedPrefsManager {
     private static String UMBEE_ENABLE_LOCATION_UPDATE = "umbee_enable_location_update";
     private static String UMBEE_ADVANCED_OPTIONS = "umbee_advanced_options";
     private static String UMBEE_NOAA_OBJECT = "umbee_noaa_object";
+    private static String UMBEE_NOTIFY_TOMORROW = "umbee_notify_tomorrow";
 
     private static SharedPrefsManager sharedPrefsManager;
     private SharedPreferences.Editor editor;
@@ -148,6 +149,15 @@ public class SharedPrefsManager {
 
     public void setNoaaByDayString(String s) {
         editor.putString(UMBEE_NOAA_OBJECT, s);
+        editor.commit();
+    }
+
+    public boolean getNotifyTomorrow() {
+        return settings.getBoolean(UMBEE_NOTIFY_TOMORROW, false);
+    }
+
+    public void setNotifyTomorrow(boolean b) {
+        editor.putBoolean(UMBEE_NOTIFY_TOMORROW, b);
         editor.commit();
     }
 }

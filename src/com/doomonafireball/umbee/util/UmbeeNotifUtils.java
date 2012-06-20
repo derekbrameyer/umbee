@@ -22,8 +22,15 @@ public class UmbeeNotifUtils {
         int icon = R.drawable.icon;
         long when = System.currentTimeMillis();
         int type = mSPM.getAlertType();
-        int morPrecip = nbd.mPop.probabilities.get(0).second;
-        int evePrecip = nbd.mPop.probabilities.get(0).first;
+        int morPrecip = 0;
+        int evePrecip = 0;
+        if (mSPM.getNotifyTomorrow()) {
+            morPrecip = nbd.mPop.probabilities.get(1).second;
+            evePrecip = nbd.mPop.probabilities.get(1).first;
+        } else {
+            morPrecip = nbd.mPop.probabilities.get(0).second;
+            evePrecip = nbd.mPop.probabilities.get(0).first;
+        }
         int highestPercentage = Math.max(morPrecip, evePrecip);
         CharSequence ticker = "", title = "", text = "";
         switch (type) {

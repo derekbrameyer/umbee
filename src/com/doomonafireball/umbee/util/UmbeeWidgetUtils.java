@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
  */
 public class UmbeeWidgetUtils {
 
-    public static LayerDrawable getActionBarDrawable(Context ctx, int bgColor) {
+    public static LayerDrawable getActionBarDrawable(Context ctx) {
         // The sun
         GradientDrawable gd1 = (GradientDrawable) ctx.getResources()
                 .getDrawable(R.drawable.action_bar_bg_layer_1).mutate();
@@ -23,17 +23,12 @@ public class UmbeeWidgetUtils {
         // The bottom yellow bar
         GradientDrawable gd2 = (GradientDrawable) ctx.getResources()
                 .getDrawable(R.drawable.action_bar_bg_layer_2);
-        // The changing color background
-        GradientDrawable gd3 = (GradientDrawable) ctx.getResources()
-                .getDrawable(R.drawable.action_bar_bg_layer_2).mutate();
-        gd3.setColor(bgColor);
-        Drawable[] layers = new Drawable[3];
-        layers[0] = gd3;
-        layers[1] = gd1;
-        layers[2] = gd2;
+        Drawable[] layers = new Drawable[2];
+        layers[0] = gd1;
+        layers[1] = gd2;
         LayerDrawable ld = new LayerDrawable(layers);
         ld.setLayerInset(
-                2,
+                1,
                 0,
                 ctx.getResources().getDimensionPixelSize(R.dimen.action_bar_offset),
                 0,

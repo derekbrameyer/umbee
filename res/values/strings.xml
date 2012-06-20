@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello umbee!</string>
+    <string name="flurry_key">V48BBYHMSMYBDSF4RJSC</string>
     <string name="app_name">umbee</string>
     <string name="app_subtitle">Your umbrella-suggesting companion!</string>
     <string name="service_name">Umbee Service</string>
@@ -31,7 +32,7 @@
     <string name="alert_example">Alert Example</string>
     <string name="restart_umbee">Restart umbee</string>
     <string name="advanced_options">Advanced options</string>
-    <string name="test_notification">Get today\'s alert</string>
+    <string name="test_notification">Get test alert</string>
     <string name="triple_threshold_think">umbee will think you...</string>
     <string name="test_notif_fetching">Fetching current weather...</string>
     <string name="zip_code_fetching">Setting location...</string>
@@ -43,6 +44,13 @@
     <string name="precip_noaa_morning">morning</string>
     <string name="precip_noaa_evening">evening</string>
     <string name="precip_noaa_today">today\'s precipitation</string>
+    <string name="today">today</string>
+    <string name="tomorrow">tomorrow</string>
+    <string name="zip_code_saved">Zip code saved!</string>
+    <string name="not_valid_zip">Not a valid zip code.</string>
+    <string name="about_umbee">About umbee</string>
+    <string name="about_umbee_content">Umbee checks with NOAA to get precipitation data for the next several days. Using this data, umbee can notify you of whether you\'ll need an umbrella when you wake up in the morning!\n\nYou can configure umbee to give you more detailed updates and set your own custom thresholds. Check out the advanced options for more details!</string>
+    <string name="notify_tomorrow">Notify me for tomorrow</string>
 
     <string name="dynamic_single_threshold">umbee will think you need it at %1$s%% and higher.</string>
     <string name="dynamic_triple_threshold1">...might need it at %1$s%% to %2$s%%.</string>
@@ -52,6 +60,7 @@
     <string name="dynamic_simple_evening">Noon-to-midnight precipitation chance is %1$s%%.</string>
     <string name="dynamic_umbee_is_set_for">umbee is set for %1$s at %2$s!</string>
     <string name="dynamic_int_percentage">%1$s%%</string>
+    <string name="dynamic_day_precipitation">%1$s\'s precipitation</string>
 
     <string name="prefs_file">UMBEEPREFS</string>
 

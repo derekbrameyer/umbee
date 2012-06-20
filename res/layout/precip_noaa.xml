@@ -12,7 +12,7 @@
         android:gravity="center"
         android:text="@string/precip_noaa_today"
         android:textColor="@color/yellow"
-        android:textSize="24dp"
+        android:textSize="20dp"
         android:shadowColor="@color/gray_shadow_for_yellow_text"
         android:shadowDx="1.0"
         android:shadowDy="1.0"

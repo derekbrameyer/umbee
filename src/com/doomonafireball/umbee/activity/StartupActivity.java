@@ -7,6 +7,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.doomonafireball.umbee.MainApp;
 import com.doomonafireball.umbee.R;
 import com.doomonafireball.umbee.adapter.NoaaPagerAdapter;
+import com.doomonafireball.umbee.dialog.AboutDialog;
+import com.doomonafireball.umbee.dialog.AlertTypeDialog;
 import com.doomonafireball.umbee.model.NoaaByDay;
 import com.doomonafireball.umbee.query.WeatherQuery;
 import com.doomonafireball.umbee.query.ZipCodeQuery;
@@ -17,8 +19,10 @@ import com.doomonafireball.umbee.util.SharedPrefsManager;
 import com.doomonafireball.umbee.util.UmbeeTextUtils;
 import com.doomonafireball.umbee.util.UmbeeTimeUtils;
 import com.doomonafireball.umbee.util.UmbeeWidgetUtils;
+import com.doomonafireball.umbee.widget.FixedScrollView;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONException;
 
@@ -29,10 +33,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,7 +48,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -64,6 +67,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.CB_enable_umbee) CheckBox enableUmbeeCB;
     @InjectView(R.id.CB_enable_smart_location) CheckBox enableLocationUpdatesCB;
     @InjectView(R.id.CB_custom_threshold) CheckBox customThresholdCB;
+    @InjectView(R.id.CB_notify_tomorrow) CheckBox notifyTomorrowCB;
     @InjectView(R.id.ET_location) CancelEditText locationET;
     @InjectView(R.id.TV_single_threshold) TextView singleThresholdTV;
     @InjectView(R.id.TV_triple_threshold) TextView tripleThresholdTV;
@@ -85,9 +89,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.RL_smart_location_container) RelativeLayout smartLocationContainerRL;
     @InjectView(R.id.RL_enable_container) RelativeLayout enableContainerRL;
     @InjectView(R.id.RL_threshold_container) RelativeLayout thresholdCheckRL;
-    @InjectView(R.id.FL_todays_precip_container) FrameLayout todaysPrecipContainerFL;
+    @InjectView(R.id.RL_notify_tomorrow_container) RelativeLayout notifyTomorrowRL;
     @InjectView(R.id.IV_advanced_options_icon) ImageView advancedOptionsIconIV;
     @InjectView(R.id.VP_todays_precip) ViewPager todaysPrecipVP;
+    @InjectView(R.id.CPI_todays_precip_ind) CirclePageIndicator todaysPrecipCPI;
+    @InjectView(R.id.FSV_parent) FixedScrollView parentFSV;
 
     SharedPrefsManager mSharedPrefs;
     Context mContext;
@@ -105,6 +111,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     private NoaaPagerAdapter mPagerAdapter;
     private ZipCodeQuery mZcq;
     private NoaaByDay mNbd;
+    private Drawable currBgDrawable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +128,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         enableUmbeeCB.setOnCheckedChangeListener(enableCCL);
         customThresholdCB.setOnCheckedChangeListener(customThresholdCCL);
         enableLocationUpdatesCB.setOnCheckedChangeListener(enableLocationUpdatesCCL);
+        notifyTomorrowCB.setOnCheckedChangeListener(notifyTomorrowCCL);
         advancedOptionsRL.setOnClickListener(advancedOptionsCL);
         updateTimeLL.setOnClickListener(updateTimeCL);
         alertTypeContainerRL.setOnClickListener(alertTypeCL);
@@ -152,19 +160,24 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             }
         });
 
+        notifyTomorrowRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                notifyTomorrowCB.setChecked(!notifyTomorrowCB.isChecked());
+            }
+        });
+
         advancedOptionsFadeInAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_fade_in);
         advancedOptionsFadeOutAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_fade_out);
         advancedOptionsRotateCwAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate_cw_180);
         advancedOptionsRotateCcwAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate_ccw_180);
-        advancedOptionsRotateCwAnim.setFillEnabled(true);
+        //advancedOptionsRotateCwAnim.setFillEnabled(true);
         advancedOptionsRotateCcwAnim.setFillEnabled(true);
-        advancedOptionsRotateCwAnim.setFillAfter(true);
+        //advancedOptionsRotateCwAnim.setFillAfter(true);
         advancedOptionsRotateCcwAnim.setFillAfter(true);
 
         advancedOptionsFadeInAnim.setAnimationListener(advancedOptionsFadeInAL);
         advancedOptionsFadeOutAnim.setAnimationListener(advancedOptionsFadeOutAL);
-        advancedOptionsRotateCwAnim.setAnimationListener(advancedOptionsRotateCwAL);
-        advancedOptionsRotateCcwAnim.setAnimationListener(advancedOptionsRotateCcwAL);
 
         String nbdString = mSharedPrefs.getNoaaByDayString();
         if (nbdString.equals("")) {
@@ -179,8 +192,14 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         mPagerAdapter = new NoaaPagerAdapter(mContext, mNbd);
         todaysPrecipVP.setAdapter(mPagerAdapter);
 
+        todaysPrecipCPI.setViewPager((ViewPager) todaysPrecipVP);
+        todaysPrecipCPI.setOnPageChangeListener(todaysPrecipOPCL);
+
+        currBgDrawable = parentFSV.getBackground();
+
         setAdvancedOptionsVisibility();
-        setActivityColors();
+        setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
+        setActionBarBackground();
         setUpPrecipViews();
         setUpPreferenceViews();
     }
@@ -194,9 +213,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case AlertTypeActivity.START_ALERT_TYPE_ACTIVITY_FOR_RESULT:
-                    int selectedAlert = data.getIntExtra(AlertTypeActivity.SELECTED_ALERT, 0);
-                    String selectedAlertText = data.getStringExtra(AlertTypeActivity.SELECTED_ALERT_TEXT);
+                case AlertTypeDialog.START_ALERT_TYPE_ACTIVITY_FOR_RESULT:
+                    int selectedAlert = data.getIntExtra(AlertTypeDialog.SELECTED_ALERT, 0);
+                    String selectedAlertText = data.getStringExtra(AlertTypeDialog.SELECTED_ALERT_TEXT);
                     int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
                     mSharedPrefs.setAlertType(selectedAlertType);
                     alertTypeTV.setText(selectedAlertText);
@@ -218,15 +237,32 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_about:
-                // TODO Launch AboutActivity
+                AboutDialog d = new AboutDialog(mContext);
+                d.show();
                 return false;
             case R.id.menu_refresh:
-                // TODO Refresh current stuff
+                WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
+                testNotifQuery.execute();
                 return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    ViewPager.OnPageChangeListener todaysPrecipOPCL = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            setWindowBackgroundGradient(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    };
 
     Animation.AnimationListener advancedOptionsFadeInAL = new Animation.AnimationListener() {
         @Override
@@ -251,38 +287,6 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onAnimationEnd(Animation animation) {
             advancedOptionsContainerLL.setVisibility(View.GONE);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-    };
-
-    Animation.AnimationListener advancedOptionsRotateCwAL = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-            //advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_close_holo_light));
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_open_holo_light));
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-    };
-
-    Animation.AnimationListener advancedOptionsRotateCcwAL = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-            //advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_open_holo_light));
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_close_holo_light));
         }
 
         @Override
@@ -410,8 +414,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener enableCCL
-            = new CompoundButton.OnCheckedChangeListener() {
+    CompoundButton.OnCheckedChangeListener enableCCL = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setEnabled(b);
@@ -438,7 +441,13 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setEnableLocationUpdates(b);
-            setUpThresholdViews();
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener notifyTomorrowCCL = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            mSharedPrefs.setNotifyTomorrow(b);
         }
     };
 
@@ -452,23 +461,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     InputMethodManager mgr = (InputMethodManager) getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
-                    Toast.makeText(mContext, "Zip code saved!", Toast.LENGTH_SHORT).show();
-                    WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
-                            new Handler() {
-                                @Override
-                                public void handleMessage(Message msg) {
-                                    try {
-                                        mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    setUpPrecipViews();
-                                    setActivityColors();
-                                }
-                            });
+                    Toast.makeText(mContext, getResources().getString(R.string.zip_code_saved), Toast.LENGTH_SHORT).show();
+                    WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
                     getWeatherQuery.execute();
                 } else {
-                    Toast.makeText(mContext, "Not a valid zip code.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT).show();
                 }
             }
             return true;
@@ -478,19 +475,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     View.OnClickListener testNotificationCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true,
-                    new Handler() {
-                        @Override
-                        public void handleMessage(Message msg) {
-                            try {
-                                mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            setActivityColors();
-                            setUpPrecipViews();
-                        }
-                    });
+            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true, refreshCompleteHandler);
             testNotifQuery.execute();
         }
     };
@@ -531,15 +516,15 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onClick(View view) {
             Bundle alertBundle = new Bundle();
-            alertBundle.putStringArray(AlertTypeActivity.ALERT_TYPE_OPTIONS, alertTypeOptions);
+            alertBundle.putStringArray(AlertTypeDialog.ALERT_TYPE_OPTIONS, alertTypeOptions);
 
-            AlertTypeActivity d = new AlertTypeActivity(mContext, alertBundle, new Handler() {
+            AlertTypeDialog d = new AlertTypeDialog(mContext, alertBundle, new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
                     Bundle msgData = msg.getData();
                     if (msgData != null) {
-                        int selectedAlert = msgData.getInt(AlertTypeActivity.SELECTED_ALERT, 0);
-                        String selectedAlertText = msgData.getString(AlertTypeActivity.SELECTED_ALERT_TEXT);
+                        int selectedAlert = msgData.getInt(AlertTypeDialog.SELECTED_ALERT, 0);
+                        String selectedAlertText = msgData.getString(AlertTypeDialog.SELECTED_ALERT_TEXT);
                         int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
                         mSharedPrefs.setAlertType(selectedAlertType);
                         alertTypeTV.setText(selectedAlertText);
@@ -549,6 +534,19 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                 }
             });
             d.show();
+        }
+    };
+
+    private Handler refreshCompleteHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            setUpPrecipViews();
+            setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
         }
     };
 
@@ -577,10 +575,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             // Increment the day
             cal.add(Calendar.DAY_OF_MONTH, 1);
             s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for),
-                    "tomorrow",
+                    getResources().getString(R.string.tomorrow),
                     UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
         } else {
-            s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for), "today",
+            s = String.format(getResources().getString(R.string.dynamic_umbee_is_set_for),
+                    getResources().getString(R.string.today),
                     UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
         }
 
@@ -602,25 +601,16 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         if (b) {
             advancedOptionsContainerLL.startAnimation(advancedOptionsFadeInAnim);
             advancedOptionsIconIV.startAnimation(advancedOptionsRotateCcwAnim);
-            //advancedOptionsContainerLL.setVisibility(View.VISIBLE);
-            //advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_close_holo_light));
         } else {
             advancedOptionsContainerLL.startAnimation(advancedOptionsFadeOutAnim);
             advancedOptionsIconIV.startAnimation(advancedOptionsRotateCwAnim);
-            //advancedOptionsContainerLL.setVisibility(View.GONE);
-            //advancedOptionsIconIV.setImageDrawable(getResources().getDrawable(R.drawable.expander_open_holo_light));
         }
     }
 
-    private void setActivityColors() {
-        setWindowBackgroundGradient();
-        setActionBarBackground();
-    }
-
-    private void setWindowBackgroundGradient() {
+    private void setWindowBackgroundGradient(int position) {
         if (mNbd.mPop.probabilities.size() > 0) {
-            int evePrecip = mNbd.mPop.probabilities.get(0).first;
-            int morPrecip = mNbd.mPop.probabilities.get(0).second;
+            int evePrecip = mNbd.mPop.probabilities.get(position).first;
+            int morPrecip = mNbd.mPop.probabilities.get(position).second;
             float evePercent = ((((float) evePrecip) / 100.0f));
             float morPercent = ((((float) morPrecip) / 100.0f));
             float percent = Math.max(evePercent, morPercent);
@@ -631,26 +621,22 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
             gd.setCornerRadius(0f);
-            this.getWindow().setBackgroundDrawable(gd);
+            Drawable[] layers = new Drawable[2];
+            layers[0] = currBgDrawable;
+            layers[1] = gd;
+            TransitionDrawable td = new TransitionDrawable(layers);
+            this.getWindow().setBackgroundDrawable(td);
+            td.startTransition(250);
+            currBgDrawable = gd;
         }
     }
 
     private void setActionBarBackground() {
-        if (mNbd.mPop.probabilities.size() > 0) {
-            int evePrecip = mNbd.mPop.probabilities.get(0).first;
-            int morPrecip = mNbd.mPop.probabilities.get(0).second;
-            float evePercent = ((((float) evePrecip) / 100.0f));
-            float morPercent = ((((float) morPrecip) / 100.0f));
-            float percent = Math.max(evePercent, morPercent);
-            int color = UmbeeWidgetUtils.getBetweenColorByPercent(percent,
-                    getResources().getColor(R.color.cornflower_blue),
-                    getResources().getColor(R.color.midnight_blue));
-            ActionBar ab = getSupportActionBar();
-            Drawable d = UmbeeWidgetUtils.getActionBarDrawable(mContext, color);
-            ab.setBackgroundDrawable(d);
-            ab.hide();
-            ab.show();
-        }
+        ActionBar ab = getSupportActionBar();
+        Drawable d = UmbeeWidgetUtils.getActionBarDrawable(mContext);
+        ab.setBackgroundDrawable(d);
+        ab.hide();
+        ab.show();
     }
 
     private void setUpPrecipViews() {
@@ -658,32 +644,21 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             // We haven't gotten any info yet, and we don't have a zip code, so we can't do anything.
         } else if ((mNbd.mPop.probabilities.size() == 0)) {
             // We haven't gotten any info yet.
-            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
-                    new Handler() {
-                        @Override
-                        public void handleMessage(Message msg) {
-                            try {
-                                mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            setUpPrecipViews();
-                            setActivityColors();
-                        }
-                    });
+            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
             getWeatherQuery.execute();
         } else {
-            // TODO ViewPager stuff
             mPagerAdapter.notifyDataSetChanged();
         }
     }
 
     private void setUpPreferenceViews() {
-        boolean isCustomThreshold = mSharedPrefs.getCustomThreshold();
-        customThresholdCB.setChecked(isCustomThreshold);
-
         boolean isUmbeeEnabled = mSharedPrefs.getEnabled();
+
         enableUmbeeCB.setChecked(isUmbeeEnabled);
+        customThresholdCB.setChecked(mSharedPrefs.getCustomThreshold());
+        enableLocationUpdatesCB.setChecked(mSharedPrefs.getEnableLocationUpdates());
+        notifyTomorrowCB.setChecked(mSharedPrefs.getNotifyTomorrow());
+
         locationET.setEnabled(isUmbeeEnabled);
         updateTimeLL.setEnabled(isUmbeeEnabled);
         alertTypeContainerRL.setEnabled(isUmbeeEnabled);
@@ -695,7 +670,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         tripleThreshold3SB.setEnabled(isUmbeeEnabled);
         enableLocationUpdatesCB.setEnabled(isUmbeeEnabled);
         enableLocationUpdatesCB.setClickable(isUmbeeEnabled);
-        enableLocationUpdatesCB.setChecked(mSharedPrefs.getEnableLocationUpdates());
+        notifyTomorrowCB.setEnabled(isUmbeeEnabled);
+        notifyTomorrowCB.setClickable(isUmbeeEnabled);
 
         if (locationET.getText().toString().length() == 0) {
             locationET.append(mSharedPrefs.getLocation());
@@ -711,19 +687,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     if (mSharedPrefs.getLocation().equals("")) {
                         Toast.makeText(mContext, getResources().getString(R.string.please_set_location), Toast.LENGTH_SHORT).show();
                     } else {
-                        WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false,
-                                new Handler() {
-                                    @Override
-                                    public void handleMessage(Message msg) {
-                                        try {
-                                            mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        setUpPrecipViews();
-                                        setActivityColors();
-                                    }
-                                });
+                        WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
                         getWeatherQuery.execute();
                     }
                 }

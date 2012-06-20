@@ -3,16 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.doomonafireball.umbee"
     android:versionCode="1"
-    android:versionName="1.0-SNAPSHOT">
+    android:versionName="1.0">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.location" android:required="true"/>
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15"/>
+
     <application
         android:name=".MainApp"
         android:icon="@drawable/icon"
@@ -28,10 +31,10 @@
             </intent-filter>
         </activity>
         <!--<activity-->
-            <!--android:name=".activity.AlertTypeActivity"-->
-            <!--android:label="@string/alert_type"-->
-            <!--android:logo="@drawable/ic_menu_notifications"-->
-            <!--android:theme="@style/UmbeeDialog"/>-->
+        <!--android:name=".activity.AlertTypeActivity"-->
+        <!--android:label="@string/alert_type"-->
+        <!--android:logo="@drawable/ic_menu_notifications"-->
+        <!--android:theme="@style/UmbeeDialog"/>-->
         <service
             android:name="com.littlefluffytoys.littlefluffylocationlibrary.LocationBroadcastService"/>
         <receiver

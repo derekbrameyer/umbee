@@ -27,8 +27,11 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
-
         </repository>
+        <!--<repository>
+            <id>acra-snapshots</id>
+            <url>http://acra.googlecode.com/svn/repository/snapshots</url>
+        </repository>-->
     </repositories>
 
     <dependencies>
@@ -96,6 +99,25 @@
             <artifactId>littlefluffylocationlibrary</artifactId>
             <version>0.1r6</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.viewpagerindicator</groupId>
+            <artifactId>library</artifactId>
+            <version>2.3.1</version>
+            <type>apklib</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.flurry.android</groupId>
+            <artifactId>FlurryAgent</artifactId>
+            <version>2.2.5</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.acra</groupId>
+            <artifactId>acra</artifactId>
+            <version>4.3.0-SNAPSHOT</version>
+        </dependency>-->
     </dependencies>
 
     <build>

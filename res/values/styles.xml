@@ -11,6 +11,7 @@
         <item name="android:editTextStyle">@style/UmbeeEditText</item>
         <item name="actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
         <item name="android:actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
+        <item name="vpiCirclePageIndicatorStyle">@style/UmbeeCirclePageIndicator</item>
     </style>
     <style name="UmbeeActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
         <item name="actionBarSize">48dp</item>
@@ -22,7 +23,7 @@
         <item name="background">@drawable/action_bar_background</item>
         <item name="android:background">@drawable/action_bar_background</item>
     </style>
-    <style name="UmbeeDialog" parent="Theme.Sherlock.Light" >
+    <style name="UmbeeDialog" parent="Theme.Sherlock.Light">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowTitleStyle">@style/DialogWindowTitle.Sherlock.Light</item>
         <item name="android:windowBackground">@drawable/abs__dialog_full_holo_light</item>
@@ -46,6 +47,15 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowContentOverlay">@null</item>
+    </style>
+    <style name="UmbeeCirclePageIndicator">
+        <item name="fillColor">@color/cpi_fill_color</item>
+        <item name="pageColor">@color/cpi_page_color</item>
+        <item name="strokeColor">@color/cpi_stroke_color</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="snap">true</item>
+        <item name="radius">4dp</item>
+        <item name="centered">true</item>
     </style>
     <style name="UmbeeOverflowButton" parent="@style/Widget.Sherlock.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_moreoverflow_normal_holo_dark</item>

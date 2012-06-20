@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_menu_notifications"/>
+            android:src="@drawable/ic_menu_info_details"/>
         <oak.TextViewWithFont
             android:id="@+id/TV_title"
             android:layout_width="wrap_content"
@@ -26,16 +26,19 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/IV_icon"
             android:layout_centerVertical="true"
-            android:text="@string/alert_type"
+            android:text="@string/about_umbee"
             android:textSize="20dp"
             android:textColor="@color/abs__holo_blue_light"
             oak:font="Roboto.ttf"/>
     </RelativeLayout>
-    <ListView
-        android:id="@+id/LV_items"
+    <oak.TextViewWithFont
+        android:id="@+id/TV_about_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/RL_title_container"
-        android:cacheColorHint="#00000000"
-        android:listSelector="@drawable/list_selector_holo_light"/>
+        android:padding="20dp"
+        android:text="@string/about_umbee_content"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        oak:font="Roboto.ttf"/>
 </RelativeLayout>

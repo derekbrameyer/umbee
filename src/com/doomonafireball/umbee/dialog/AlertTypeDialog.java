@@ -1,4 +1,4 @@
-package com.doomonafireball.umbee.activity;
+package com.doomonafireball.umbee.dialog;
 
 import com.actionbarsherlock.view.Window;
 import com.doomonafireball.umbee.R;
@@ -20,7 +20,7 @@ import android.widget.TextView;
 /**
  * User: derek Date: 6/14/12 Time: 5:35 PM
  */
-public class AlertTypeActivity extends Dialog {
+public class AlertTypeDialog extends Dialog {
 
 
     String[] alertTypeOptions;
@@ -36,22 +36,22 @@ public class AlertTypeActivity extends Dialog {
     public static final String SELECTED_ALERT = "selected_alert";
     public static final String SELECTED_ALERT_TEXT = "selected_alert_text";
 
-    public AlertTypeActivity(Context context) {
+    public AlertTypeDialog(Context context) {
         super(context);
         mContext = context;
     }
 
-    public AlertTypeActivity(Context context, int theme) {
+    public AlertTypeDialog(Context context, int theme) {
         super(context, theme);
         mContext = context;
     }
 
-    protected AlertTypeActivity(Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected AlertTypeDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         mContext = context;
     }
 
-    public AlertTypeActivity(Context context, Bundle bundle, Handler handler) {
+    public AlertTypeDialog(Context context, Bundle bundle, Handler handler) {
         super(context);
         mContext = context;
         mExtras = bundle;
@@ -62,11 +62,11 @@ public class AlertTypeActivity extends Dialog {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //requestWindowFeature(Window.FEATURE_LEFT_ICON);
-
         requestWindowFeature((int) Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.alert_type);
+        setCancelable(true);
+        setCanceledOnTouchOutside(true);
 
         if (mExtras != null && mExtras.containsKey(ALERT_TYPE_OPTIONS)) {
             alertTypeOptions = mExtras.getStringArray(ALERT_TYPE_OPTIONS);
@@ -75,14 +75,6 @@ public class AlertTypeActivity extends Dialog {
         }
 
         alertTypeAdapter = new AlertTypeAdapter(mContext, alertTypeOptions);
-
-        /*alertTypeAdapter = ArrayAdapter.createFromResource(this, alertTypeOptions,
-                android.R.layout.simple_dropdown_item_1line);
-        alertTypeAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);*/
-        //alertTypeOptions = getResources().getStringArray(R.array.alert_type_array);
-
-        //setTitle(mContext.getString(R.string.alert_type));
-        //setFeatureDrawable(Window.FEATURE_LEFT_ICON, mContext.getResources().getDrawable(R.drawable.ic_menu_notifications));
         getWindow().setBackgroundDrawableResource(R.drawable.abs__dialog_full_holo_light);
 
         itemsLV = (ListView) findViewById(R.id.LV_items);
@@ -91,9 +83,6 @@ public class AlertTypeActivity extends Dialog {
         itemsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //Intent returnIntent = new Intent();
-                //returnIntent.putExtra(SELECTED_ALERT, position);
-                //returnIntent.putExtra(SELECTED_ALERT_TEXT, alertTypeOptions[position]);
                 Bundle extras = new Bundle();
                 extras.putInt(SELECTED_ALERT, position);
                 extras.putString(SELECTED_ALERT_TEXT, alertTypeOptions[position]);
@@ -104,15 +93,6 @@ public class AlertTypeActivity extends Dialog {
             }
         });
     }
-
-    /*@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            setResult(RESULT_CANCELED);
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }*/
 
     private class AlertTypeAdapter extends BaseAdapter {
 

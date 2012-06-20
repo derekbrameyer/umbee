@@ -18,6 +18,9 @@
     <color name="check_box_inner_circle_focused">#ff777777</color>
     <color name="check_box_outer_circle_focused">#00ffff00</color>
     <color name="divider_color">#777777</color>
+    <color name="cpi_fill_color">#ffffff00</color>
+    <color name="cpi_stroke_color">#ff333333</color>
+    <color name="cpi_page_color">#00000000</color>
 
     <color name="bright_foreground_holo_light">#ff000000</color>
     <color name="bright_foreground_disabled_holo_light">#ffb2b2b2</color>
