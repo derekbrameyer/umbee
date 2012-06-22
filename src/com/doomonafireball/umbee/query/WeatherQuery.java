@@ -73,13 +73,13 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         // Get NOAA results
         RestClient noaaClient = new RestClient(NOAA_URL);
-        noaaClient.AddParam("format", "24 hourly");
-        noaaClient.AddParam("numDays", "6");
-        noaaClient.AddParam("zipCodeList", mSPM.getLocation());
-        noaaClient.AddParam("startDate",
+        noaaClient.addParam("format", "24 hourly");
+        noaaClient.addParam("numDays", "6");
+        noaaClient.addParam("zipCodeList", mSPM.getLocation());
+        noaaClient.addParam("startDate",
                 UmbeeTimeUtils.formatNoaaForCalendar(new GregorianCalendar()));
         try {
-            noaaClient.Execute(RestClient.RequestMethod.GET);
+            noaaClient.execute(RestClient.RequestMethod.GET);
         } catch (Exception e) {
             e.printStackTrace();
         }

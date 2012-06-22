@@ -67,15 +67,15 @@ public class RestClient {
         headers = new ArrayList<NameValuePair>();
     }
 
-    public void AddParam(String name, String value) {
+    public void addParam(String name, String value) {
         params.add(new BasicNameValuePair(name, value));
     }
 
-    public void AddHeader(String name, String value) {
+    public void addHeader(String name, String value) {
         headers.add(new BasicNameValuePair(name, value));
     }
 
-    public void Execute(RequestMethod method) throws Exception {
+    public void execute(RequestMethod method) throws Exception {
         switch (method) {
             case GET: {
                 // add parameters
@@ -122,37 +122,32 @@ public class RestClient {
     }
 
     private void executeRequest(HttpUriRequest request, String url) {
-        HttpClient client = new DefaultHttpClient();
-
+        DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse;
-
         try {
-            httpResponse = client.execute(request);
+            httpResponse = httpClient.execute(request);
             responseCode = httpResponse.getStatusLine().getStatusCode();
             message = httpResponse.getStatusLine().getReasonPhrase();
-
             HttpEntity entity = httpResponse.getEntity();
-
             if (entity != null) {
-
                 InputStream instream = entity.getContent();
                 response = convertStreamToString(instream);
-
+                Log.d(MainApp.TAG, "URL Response:");
+                Log.d(MainApp.TAG, response);
                 // Closing the input stream will trigger connection release
                 instream.close();
             }
-
+            httpClient.getConnectionManager().shutdown();
         } catch (ClientProtocolException e) {
-            client.getConnectionManager().shutdown();
+            httpClient.getConnectionManager().shutdown();
             e.printStackTrace();
         } catch (IOException e) {
-            client.getConnectionManager().shutdown();
+            httpClient.getConnectionManager().shutdown();
             e.printStackTrace();
         }
     }
 
     private static String convertStreamToString(InputStream is) {
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
 
@@ -163,13 +158,13 @@ public class RestClient {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }/* finally {
             try {
                 is.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         return sb.toString();
     }
 }

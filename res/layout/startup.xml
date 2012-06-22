@@ -5,8 +5,7 @@
     android:id="@+id/FSV_parent"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true"
-    android:background="@color/transparent">
+    android:fillViewport="true">
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -18,13 +17,15 @@
             android:layout_width="fill_parent"
             android:layout_height="130dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp"
+            android:visibility="gone"/>
         <com.viewpagerindicator.CirclePageIndicator
             android:id="@+id/CPI_todays_precip_ind"
             android:paddingTop="5dp"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"/>
@@ -68,6 +69,7 @@
                     android:orientation="vertical">
                     <oak.TextViewWithFont
                         style="@style/PreferenceTitleText"
+                        android:id="@+id/TV_update_time_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/update_time"
@@ -79,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="@integer/preference_button_weight"
                     android:gravity="right"
-                    android:textColor="@color/black"
+                    android:textColor="@color/black_text_with_disabling"
                     android:textSize="22dp"
                     android:shadowDx="1.0"
                     android:shadowDy="1.0"
@@ -94,6 +96,7 @@
                 android:paddingRight="0dp">
                 <oak.TextViewWithFont
                     style="@style/PreferenceTitleText"
+                    android:id="@+id/TV_location_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -105,7 +108,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:hint="@string/location_hint"
                     android:textSize="20dp"
                     android:shadowDx="1.0"
                     android:shadowDy="1.0"
@@ -128,6 +130,7 @@
                 android:background="@drawable/list_selector_holo_light">
                 <oak.TextViewWithFont
                     style="@style/PreferenceTitleText"
+                    android:id="@+id/TV_advanced_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/advanced_options"
@@ -182,6 +185,7 @@
                         android:duplicateParentState="true"/>
                     <oak.TextViewWithFont
                         style="@style/PreferenceTitleText"
+                        android:id="@+id/TV_notify_tomorrow_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -196,6 +200,7 @@
                     android:background="@drawable/list_selector_holo_light">
                     <oak.TextViewWithFont
                         style="@style/PreferenceTitleText"
+                        android:id="@+id/TV_test_notif_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/test_notification"
@@ -223,6 +228,7 @@
                         oak:font="Roboto.ttf"/>
                     <oak.TextViewWithFont
                         style="@style/PreferenceSubtitleText"
+                        android:id="@+id/TV_enable_location_updates_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/TV_enable_location_updates"
@@ -241,6 +247,7 @@
                         android:duplicateParentState="true"/>
                     <oak.TextViewWithFont
                         style="@style/PreferenceTitleText"
+                        android:id="@+id/TV_custom_threshold_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -254,11 +261,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-                    <SeekBar
-                        style="@style/PreferenceSeekBar"
-                        android:id="@+id/SB_single_threshold"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
                     <oak.TextViewWithFont
                         style="@style/PreferenceSubtitleText"
                         android:id="@+id/TV_single_threshold"
@@ -268,6 +270,11 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         oak:font="Roboto.ttf"/>
+                    <SeekBar
+                        style="@style/PreferenceSeekBar"
+                        android:id="@+id/SB_single_threshold"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/LL_triple_threshold_container"
@@ -275,25 +282,9 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-                    <SeekBar
-                        style="@style/PreferenceSeekBarTransparent"
-                        android:id="@+id/SB_triple_threshold_1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
-                    <SeekBar
-                        style="@style/PreferenceSeekBarTransparent"
-                        android:id="@+id/SB_triple_threshold_2"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
-                    <SeekBar
-                        style="@style/PreferenceSeekBarTransparent"
-                        android:id="@+id/SB_triple_threshold_3"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"/>
                     <oak.TextViewWithFont
                         style="@style/PreferenceSubtitleText"
+                        android:id="@+id/TV_triple_threshold_title"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -327,6 +318,23 @@
                         android:layout_marginRight="10dp"
                         android:gravity="right"
                         oak:font="Roboto.ttf"/>
+                    <SeekBar
+                        style="@style/PreferenceSeekBarTransparent"
+                        android:id="@+id/SB_triple_threshold_1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
+                    <SeekBar
+                        style="@style/PreferenceSeekBarTransparent"
+                        android:id="@+id/SB_triple_threshold_2"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
+                    <SeekBar
+                        style="@style/PreferenceSeekBarTransparent"
+                        android:id="@+id/SB_triple_threshold_3"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
                 <View
                     android:layout_width="fill_parent"

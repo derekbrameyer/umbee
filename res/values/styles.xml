@@ -103,6 +103,7 @@
         <item name="android:focusable">true</item>
     </style>
     <style name="PreferenceTitleText">
+        <item name="android:textColor">@color/black_text_with_disabling</item>
         <item name="android:textSize">@dimen/pref_title_size</item>
         <item name="android:shadowDx">0.5</item>
         <item name="android:shadowDy">0.5</item>
@@ -110,7 +111,7 @@
         <item name="android:shadowColor">@android:color/white</item>
     </style>
     <style name="PreferenceSubtitleText">
-        <item name="android:textColor">@color/pref_subtitle</item>
+        <item name="android:textColor">@color/subtitle_text_with_disabling</item>
         <item name="android:textSize">@dimen/pref_subtitle_size</item>
         <item name="android:shadowDx">0.5</item>
         <item name="android:shadowDy">0.5</item>

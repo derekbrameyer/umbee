@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Enabled states -->
+    <item android:state_enabled="false"
+          android:state_checked="true"
+          android:drawable="@drawable/umbee_check_box_disabled_checked"/>
+    <item android:state_enabled="false"
+          android:state_checked="false"
+          android:drawable="@drawable/umbee_check_box_disabled"/>
     <item android:state_checked="true"
           android:state_window_focused="false"
           android:state_enabled="true"

@@ -16,5 +16,4 @@ public class NotificationReceiver extends BroadcastReceiver {
         Intent dailyNotif = new Intent(context, NotificationService.class);
         context.startService(dailyNotif);
     }
-
 }

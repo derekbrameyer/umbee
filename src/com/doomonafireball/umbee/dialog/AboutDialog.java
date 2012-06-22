@@ -2,6 +2,7 @@ package com.doomonafireball.umbee.dialog;
 
 import com.actionbarsherlock.view.Window;
 import com.doomonafireball.umbee.R;
+import com.flurry.android.FlurryAgent;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -28,23 +29,6 @@ public class AboutDialog extends Dialog {
         mContext = context;
     }
 
-    /*public AboutDialog(Context context, int theme) {
-        super(context, theme);
-        mContext = context;
-    }
-
-    protected AboutDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        mContext = context;
-    }
-
-    public AboutDialog(Context context, Bundle bundle, Handler handler) {
-        super(context);
-        mContext = context;
-        mExtras = bundle;
-        mHandler = handler;
-    }*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,5 +40,18 @@ public class AboutDialog extends Dialog {
         setCanceledOnTouchOutside(true);
 
         getWindow().setBackgroundDrawableResource(R.drawable.abs__dialog_full_holo_light);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(mContext, mContext.getString(R.string.flurry_key));
+        FlurryAgent.logEvent("about_dialog_on_start");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(mContext);
     }
 }

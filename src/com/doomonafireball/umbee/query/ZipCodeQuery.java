@@ -75,13 +75,14 @@ public class ZipCodeQuery extends AsyncTask<Void, Void, Void> {
         if (mSPM.getEnableLocationUpdates() || this.override) {
             // Get Geonames results
             RestClient geoNamesClient = new RestClient(GEONAMES_URL);
-            geoNamesClient.AddParam("formatted", "true");
-            geoNamesClient.AddParam("lat", Float.toString(mLat));
-            geoNamesClient.AddParam("lng", Float.toString(mLng));
+            geoNamesClient.addParam("formatted", "true");
+            geoNamesClient.addParam("lat", Float.toString(mLat));
+            geoNamesClient.addParam("lng", Float.toString(mLng));
+            geoNamesClient.addHeader("accept", "application/json");
             try {
-                geoNamesClient.Execute(RestClient.RequestMethod.GET);
+                geoNamesClient.execute(RestClient.RequestMethod.GET);
             } catch (Exception e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             response = geoNamesClient.getResponse();
             errorMessage = geoNamesClient.getErrorMessage();
@@ -112,7 +113,7 @@ public class ZipCodeQuery extends AsyncTask<Void, Void, Void> {
         if (mDisplayProgress) {
             mDialog.dismiss();
         }
-        if (mPostalCodes.size() > 0) {
+        if (mPostalCodes != null && mPostalCodes.size() > 0) {
             mSPM.setLocation(mPostalCodes.get(0).postalCode);
         }
         mHandler.sendMessage(new Message());

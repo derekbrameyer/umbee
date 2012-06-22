@@ -19,17 +19,17 @@ public class UmbeeNotifUtils {
         NotificationManager mNM = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         SharedPrefsManager mSPM = SharedPrefsManager.getInstance();
 
-        int icon = R.drawable.icon;
+        int icon = R.drawable.icon_notif;
         long when = System.currentTimeMillis();
         int type = mSPM.getAlertType();
         int morPrecip = 0;
         int evePrecip = 0;
         if (mSPM.getNotifyTomorrow()) {
-            morPrecip = nbd.mPop.probabilities.get(1).second;
-            evePrecip = nbd.mPop.probabilities.get(1).first;
+            morPrecip = nbd.mPop.probabilities.get(1).first;
+            evePrecip = nbd.mPop.probabilities.get(1).second;
         } else {
-            morPrecip = nbd.mPop.probabilities.get(0).second;
-            evePrecip = nbd.mPop.probabilities.get(0).first;
+            morPrecip = nbd.mPop.probabilities.get(0).first;
+            evePrecip = nbd.mPop.probabilities.get(0).second;
         }
         int highestPercentage = Math.max(morPrecip, evePrecip);
         CharSequence ticker = "", title = "", text = "";
@@ -98,14 +98,22 @@ public class UmbeeNotifUtils {
                 break;
         }
 
+        // TODO Get default colors
+        PreFroyoNotificationStyleDiscover pfnsd = new PreFroyoNotificationStyleDiscover(ctx);
+
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
 
         RemoteViews contentView = new RemoteViews(ctx.getPackageName(), R.layout.two_line_notif);
-        contentView.setImageViewResource(R.id.image, R.drawable.icon);
+        contentView.setImageViewResource(R.id.image, R.drawable.icon_notif);
         contentView.setTextViewText(R.id.title, title);
         contentView.setTextViewText(R.id.text, text);
+        contentView.setTextColor(R.id.title, pfnsd.getTitleColor());
+        contentView.setTextColor(R.id.text, pfnsd.getTextColor());
+        contentView.setFloat(R.id.title, "setTextSize", pfnsd.getTitleSize());
+        contentView.setFloat(R.id.text, "setTextSize", pfnsd.getTextSize());
 
         Notification notif = new Notification(icon, ticker, when);
+        //notif.setLatestEventInfo(ctx, title, text, pi);
         notif.contentView = contentView;
         notif.contentIntent = pi;
         notif.flags |= Notification.FLAG_AUTO_CANCEL;

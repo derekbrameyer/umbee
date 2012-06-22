@@ -16,10 +16,12 @@ import com.doomonafireball.umbee.receiver.NotificationReceiver;
 import com.doomonafireball.umbee.util.JsonParser;
 import com.doomonafireball.umbee.util.Refs;
 import com.doomonafireball.umbee.util.SharedPrefsManager;
+import com.doomonafireball.umbee.util.UmbeeNotifUtils;
 import com.doomonafireball.umbee.util.UmbeeTextUtils;
 import com.doomonafireball.umbee.util.UmbeeTimeUtils;
 import com.doomonafireball.umbee.util.UmbeeWidgetUtils;
 import com.doomonafireball.umbee.widget.FixedScrollView;
+import com.flurry.android.FlurryAgent;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockFragmentActivity;
 import com.littlefluffytoys.littlefluffylocationlibrary.LocationInfo;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -58,6 +60,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import oak.CancelEditText;
 import roboguice.inject.InjectView;
@@ -94,6 +97,16 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.VP_todays_precip) ViewPager todaysPrecipVP;
     @InjectView(R.id.CPI_todays_precip_ind) CirclePageIndicator todaysPrecipCPI;
     @InjectView(R.id.FSV_parent) FixedScrollView parentFSV;
+    @InjectView(R.id.TV_update_time_title) TextView titleUpdateTimeTV;
+    @InjectView(R.id.TV_location_title) TextView locationTitleTV;
+    @InjectView(R.id.TV_advanced_title) TextView advancedTitleTV;
+    @InjectView(R.id.TV_alert_type_title) TextView alertTypeTitleTV;
+    @InjectView(R.id.TV_notify_tomorrow_title) TextView notifyTomorrowTitleTV;
+    @InjectView(R.id.TV_test_notif_title) TextView testNotifTitleTV;
+    @InjectView(R.id.TV_enable_location_updates) TextView enableLocationUpdatesTitleTV;
+    @InjectView(R.id.TV_enable_location_updates_sub) TextView enableLocationsSubtitleTV;
+    @InjectView(R.id.TV_custom_threshold_title) TextView customThresholdTV;
+    @InjectView(R.id.TV_triple_threshold_title) TextView tripleThresholdTitleTV;
 
     SharedPrefsManager mSharedPrefs;
     Context mContext;
@@ -195,7 +208,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         todaysPrecipCPI.setViewPager((ViewPager) todaysPrecipVP);
         todaysPrecipCPI.setOnPageChangeListener(todaysPrecipOPCL);
 
-        currBgDrawable = parentFSV.getBackground();
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{getResources().getColor(R.color.cornflower_blue), getResources().getColor(R.color.white)});
+        gd.setCornerRadius(0f);
+        currBgDrawable = gd;
 
         setAdvancedOptionsVisibility();
         setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
@@ -207,6 +224,19 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
+        FlurryAgent.logEvent("startup_activity_on_resume");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(mContext, getResources().getString(R.string.flurry_key));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(mContext);
     }
 
     @Override
@@ -219,6 +249,10 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
                     mSharedPrefs.setAlertType(selectedAlertType);
                     alertTypeTV.setText(selectedAlertText);
+                    HashMap<String, String> parameters = new HashMap<String, String>();
+                    parameters.put("alert_type", "" + selectedAlertType);
+                    parameters.put("alert_text", selectedAlertText);
+                    FlurryAgent.logEvent("alert_type_changed", parameters);
                     setUpPreferenceViews();
                     setUpThresholdViews();
                     break;
@@ -310,6 +344,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             mSharedPrefs.setSingleThreshold(seekBar.getProgress());
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("threshold", "" + seekBar.getProgress());
+            FlurryAgent.logEvent("single_seek_bar_changed", parameters);
         }
     };
 
@@ -338,6 +375,10 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             mSharedPrefs.setTripleThreshold1(seekBar.getProgress());
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("threshold", "" + seekBar.getProgress());
+            FlurryAgent.logEvent("triple_1_seek_bar_changed", parameters);
+
         }
     };
 
@@ -379,6 +420,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             mSharedPrefs.setTripleThreshold2(seekBar.getProgress());
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("threshold", "" + seekBar.getProgress());
+            FlurryAgent.logEvent("triple_2_seek_bar_changed", parameters);
         }
     };
 
@@ -411,6 +455,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             mSharedPrefs.setTripleThreshold3(seekBar.getProgress());
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("threshold", "" + seekBar.getProgress());
+            FlurryAgent.logEvent("triple_3_seek_bar_changed", parameters);
         }
     };
 
@@ -423,6 +470,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             } else {
                 cancelUmbeeService();
             }
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("umbee_enabled", "" + b);
+            FlurryAgent.logEvent("umbee_enabled_checked", parameters);
             setUpPreferenceViews();
         }
     };
@@ -432,6 +482,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setCustomThreshold(b);
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("custom_threshold", "" + b);
+            FlurryAgent.logEvent("custom_threshold_checked", parameters);
             setUpThresholdViews();
         }
     };
@@ -441,6 +494,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setEnableLocationUpdates(b);
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("enable_location_updates", "" + b);
+            FlurryAgent.logEvent("enable_location_updates_checked", parameters);
         }
     };
 
@@ -448,6 +504,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             mSharedPrefs.setNotifyTomorrow(b);
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("notify_tomorrow", "" + b);
+            FlurryAgent.logEvent("notify_tomorrow_checked", parameters);
         }
     };
 
@@ -458,6 +517,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                 String loc = locationET.getText().toString();
                 if (UmbeeTextUtils.isValidZipCode(loc)) {
                     mSharedPrefs.setLocation(loc);
+                    HashMap<String, String> parameters = new HashMap<String, String>();
+                    parameters.put("custom_location", loc);
+                    FlurryAgent.logEvent("custom_location_set", parameters);
                     InputMethodManager mgr = (InputMethodManager) getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
@@ -475,8 +537,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     View.OnClickListener testNotificationCL = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, true, refreshCompleteHandler);
-            testNotifQuery.execute();
+            FlurryAgent.logEvent("test_notification_clicked");
+            UmbeeNotifUtils.createNotification(mContext, mNbd);
         }
     };
 
@@ -501,6 +563,11 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                                         UmbeeTimeUtils.timeOfDayFromTimePicker(hourOfDay, minute));
                                 updateTimeTV.setText(
                                         UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+                                HashMap<String, String> parameters = new HashMap<String, String>();
+                                parameters.put("update_time_hour", "" + hourOfDay);
+                                parameters.put("update_time_minute", "" + minute);
+                                parameters.put("update_time_text", UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+                                FlurryAgent.logEvent("update_time_set", parameters);
                                 startUmbeeService();
                             }
                         },
@@ -527,6 +594,10 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                         String selectedAlertText = msgData.getString(AlertTypeDialog.SELECTED_ALERT_TEXT);
                         int selectedAlertType = selectedAlert + Refs.ALERT_BASE;
                         mSharedPrefs.setAlertType(selectedAlertType);
+                        HashMap<String, String> parameters = new HashMap<String, String>();
+                        parameters.put("alert_type", "" + selectedAlertType);
+                        parameters.put("alert_type_text", "" + selectedAlertText);
+                        FlurryAgent.logEvent("alert_type_set", parameters);
                         alertTypeTV.setText(selectedAlertText);
                         setUpPreferenceViews();
                         setUpThresholdViews();
@@ -584,7 +655,6 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         }
 
         Intent notif = new Intent(mContext, NotificationReceiver.class);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, notif,
                 PendingIntent.FLAG_CANCEL_CURRENT);
@@ -647,7 +717,12 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
             WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
             getWeatherQuery.execute();
         } else {
-            mPagerAdapter.notifyDataSetChanged();
+            todaysPrecipVP.setVisibility(View.VISIBLE);
+            todaysPrecipCPI.setVisibility(View.VISIBLE);
+            int currPos = todaysPrecipVP.getCurrentItem();
+            mPagerAdapter = new NoaaPagerAdapter(mContext, mNbd);
+            todaysPrecipVP.setAdapter(mPagerAdapter);
+            todaysPrecipCPI.setCurrentItem(currPos);
         }
     }
 
@@ -672,6 +747,29 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         enableLocationUpdatesCB.setClickable(isUmbeeEnabled);
         notifyTomorrowCB.setEnabled(isUmbeeEnabled);
         notifyTomorrowCB.setClickable(isUmbeeEnabled);
+        notifyTomorrowRL.setEnabled(isUmbeeEnabled);
+        testNotifRL.setEnabled(isUmbeeEnabled);
+        smartLocationContainerRL.setEnabled(isUmbeeEnabled);
+        thresholdCheckRL.setEnabled(isUmbeeEnabled);
+        advancedOptionsRL.setEnabled(isUmbeeEnabled);
+        // Disable TextViews
+        singleThresholdTV.setEnabled(isUmbeeEnabled);
+        tripleThresholdTV.setEnabled(isUmbeeEnabled);
+        tripleThreshold2TV.setEnabled(isUmbeeEnabled);
+        tripleThreshold3TV.setEnabled(isUmbeeEnabled);
+        updateTimeTV.setEnabled(isUmbeeEnabled);
+        alertTypeTV.setEnabled(isUmbeeEnabled);
+        // Disable title TextViews
+        titleUpdateTimeTV.setEnabled(isUmbeeEnabled);
+        locationTitleTV.setEnabled(isUmbeeEnabled);
+        advancedTitleTV.setEnabled(isUmbeeEnabled);
+        alertTypeTitleTV.setEnabled(isUmbeeEnabled);
+        notifyTomorrowTitleTV.setEnabled(isUmbeeEnabled);
+        testNotifTitleTV.setEnabled(isUmbeeEnabled);
+        enableLocationUpdatesTitleTV.setEnabled(isUmbeeEnabled);
+        enableLocationsSubtitleTV.setEnabled(isUmbeeEnabled);
+        customThresholdTV.setEnabled(isUmbeeEnabled);
+        tripleThresholdTitleTV.setEnabled(isUmbeeEnabled);
 
         if (locationET.getText().toString().length() == 0) {
             locationET.append(mSharedPrefs.getLocation());
