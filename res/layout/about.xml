@@ -31,14 +31,35 @@
             android:textColor="@color/abs__holo_blue_light"
             oak:font="Roboto.ttf"/>
     </RelativeLayout>
-    <oak.TextViewWithFont
-        android:id="@+id/TV_about_content"
+    <ScrollView
+        android:id="@+id/SV_about_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/RL_title_container"
-        android:padding="20dp"
-        android:text="@string/about_umbee_content"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        oak:font="Roboto.ttf"/>
+        android:layout_below="@id/RL_title_container">
+        <LinearLayout
+            android:id="@+id/LL_about_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical">
+            <oak.TextViewWithFont
+                android:id="@+id/TV_about_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_umbee_content"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                oak:font="Roboto.ttf"/>
+            <oak.TextViewWithFont
+                android:id="@+id/TV_about_content_dev"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:autoLink="email"
+                android:text="@string/about_umbee_content_dev"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                oak:font="Roboto.ttf"/>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
