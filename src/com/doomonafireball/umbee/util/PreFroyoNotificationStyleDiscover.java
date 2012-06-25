@@ -1,5 +1,6 @@
 package com.doomonafireball.umbee.util;
 
+import android.R;
 import android.app.Notification;
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -32,7 +33,7 @@ public class PreFroyoNotificationStyleDiscover {
     }
 
     public int getTitleColor() {
-        return mNotifyTitleColor;
+        return mNotifyTitleColor.intValue();
     }
 
     public float getTitleSize() {
@@ -51,7 +52,7 @@ public class PreFroyoNotificationStyleDiscover {
                     WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
                     wm.getDefaultDisplay().getMetrics(metrics);
 
-                    if (TEXT_SEARCH_TEXT == text) {
+                    if (TEXT_SEARCH_TEXT.equals(text)) {
                         mNotifyTextColor = tv.getTextColors().getDefaultColor();
                         mNotifyTextSize = tv.getTextSize();
                         mNotifyTextSize /= metrics.scaledDensity;

@@ -24,12 +24,18 @@ public class UmbeeNotifUtils {
         int type = mSPM.getAlertType();
         int morPrecip = 0;
         int evePrecip = 0;
-        if (mSPM.getNotifyTomorrow()) {
-            morPrecip = nbd.mPop.probabilities.get(1).first;
-            evePrecip = nbd.mPop.probabilities.get(1).second;
-        } else {
-            morPrecip = nbd.mPop.probabilities.get(0).first;
-            evePrecip = nbd.mPop.probabilities.get(0).second;
+        try {
+            if (mSPM.getNotifyTomorrow()) {
+                morPrecip = nbd.mPop.probabilities.get(1).first;
+                evePrecip = nbd.mPop.probabilities.get(1).second;
+            } else {
+                morPrecip = nbd.mPop.probabilities.get(0).first;
+                evePrecip = nbd.mPop.probabilities.get(0).second;
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // User has not gotten any data yet!
+            morPrecip = 100;
+            evePrecip = 100;
         }
         int highestPercentage = Math.max(morPrecip, evePrecip);
         CharSequence ticker = "", title = "", text = "";
@@ -98,7 +104,6 @@ public class UmbeeNotifUtils {
                 break;
         }
 
-        // TODO Get default colors
         PreFroyoNotificationStyleDiscover pfnsd = new PreFroyoNotificationStyleDiscover(ctx);
 
         PendingIntent pi = PendingIntent.getActivity(ctx, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
