@@ -48,7 +48,7 @@
         <dependency>
             <groupId>com.willowtreeapps</groupId>
             <artifactId>oak-library</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>1.1.4</version>
         </dependency>
 
         <dependency>
@@ -78,14 +78,14 @@
         <dependency>
             <groupId>com.actionbarsherlock</groupId>
             <artifactId>library</artifactId>
-            <version>4.0.2</version>
+            <version>4.2.0</version>
             <type>apklib</type>
         </dependency>
 
         <dependency>
             <groupId>com.actionbarsherlock</groupId>
             <artifactId>library</artifactId>
-            <version>4.0.2</version>
+            <version>4.2.0</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -93,13 +93,13 @@
         <dependency>
             <groupId>com.littlefluffytoys</groupId>
             <artifactId>littlefluffylocationlibrary</artifactId>
-            <version>0.1r6</version>
+            <version>1.0r11</version>
         </dependency>
 
         <dependency>
             <groupId>com.viewpagerindicator</groupId>
             <artifactId>library</artifactId>
-            <version>2.3.1</version>
+            <version>2.4.1</version>
             <type>apklib</type>
         </dependency>
 

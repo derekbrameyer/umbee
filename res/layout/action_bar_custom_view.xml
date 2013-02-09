@@ -4,7 +4,7 @@
         xmlns:oak="http://oak/oak/schema"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <oak.TextViewWithFont
+    <oak.widget.TextViewWithFont
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -15,5 +15,5 @@
             android:shadowDx="1.0"
             android:shadowDy="1.0"
             android:shadowRadius="1.0"
-            oak:font="Chunkfive.otf"/>
+            oak:font="@string/font_light"/>
 </LinearLayout>

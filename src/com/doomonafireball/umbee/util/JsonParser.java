@@ -21,8 +21,10 @@ public class JsonParser {
         ArrayList<GeoNamesPostalCode> postalCodes = new ArrayList<GeoNamesPostalCode>();
         JSONObject o = new JSONObject(json);
         JSONArray codes = o.optJSONArray("postalCodes");
-        for (int i = 0; i < codes.length(); i++) {
-            postalCodes.add(parseGnpc((JSONObject) codes.get(i)));
+        if (codes != null) {
+            for (int i = 0; i < codes.length(); i++) {
+                postalCodes.add(parseGnpc((JSONObject) codes.get(i)));
+            }
         }
         return postalCodes;
     }

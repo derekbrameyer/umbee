@@ -26,7 +26,7 @@ public class MainApp extends Application {
         ACRA.init(this);
         super.onCreate();
         Log.i(TAG, "onCreate");
-        LocationLibrary.initialiseLibrary(getBaseContext());
+        LocationLibrary.initialiseLibrary(getBaseContext(), "com.doomonafireball.umbee");
         OAKImageLoader.initialize(this, OAKImageLoader.PREFER_SD);
         Injector i = RoboGuice.getBaseApplicationInjector(this);
         mDataStore = i.getInstance(Datastore.class);

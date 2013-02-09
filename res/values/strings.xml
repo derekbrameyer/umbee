@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello umbee!</string>
+    <string name="font">Roboto.ttf</string>
+    <string name="font_bold">Roboto-Bold.ttf</string>
+    <string name="font_light">Roboto-Light.ttf</string>
+    <string name="font_thin">Roboto-Thin.ttf</string>
+    <string name="font_lcd">LiquidCrystalBold.otf</string>
     <string name="flurry_key">V48BBYHMSMYBDSF4RJSC</string>
     <string name="flurry_key_dev">V48BBYHMSMYBDSF4RJSC</string>
     <string name="app_name">umbee</string>
     <string name="app_subtitle">Your umbrella-suggesting companion!</string>
     <string name="service_name">Umbee Service</string>
+    <string name="content_description">Content Description</string>
     <string name="enable_umbee">Enable umbee</string>
     <string name="umbee_lowercase">umbee</string>
     <string name="location">ZIP code</string>
@@ -50,8 +55,13 @@
     <string name="zip_code_saved">Zip code saved!</string>
     <string name="not_valid_zip">Not a valid zip code.</string>
     <string name="about_umbee">About umbee</string>
-    <string name="about_umbee_content">Umbee checks with NOAA to get precipitation data for the next several days. Using this data, umbee can notify you of whether you\'ll need an umbrella when you wake up in the morning!\n\nYou can configure umbee to give you more detailed updates and set your own custom thresholds. Check out the advanced options for more details!</string>
-    <string name="about_umbee_content_dev">\nDeveloped by\nDoom on a Fireball Studios\ndoomonafireball@gmail.com</string>
+    <string name="about_umbee_content">Umbee checks with NOAA to get precipitation data for the next several days. Using
+        this data, umbee can notify you of whether you\'ll need an umbrella when you wake up in the morning!\n\nYou can
+        configure umbee to give you more detailed updates and set your own custom thresholds. Check out the advanced
+        options for more details!
+    </string>
+    <string name="about_umbee_content_dev">\nDeveloped by\nDoom on a Fireball Studios\ndoomonafireball@gmail.com
+    </string>
     <string name="notify_tomorrow">Notify me for tomorrow</string>
 
     <string name="dynamic_single_threshold">umbee will think you need it at %1$s%% and higher.</string>

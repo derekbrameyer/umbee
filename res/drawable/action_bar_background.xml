@@ -11,9 +11,9 @@
                     android:centerY="0.0"/>
         </shape>
     </item>
-    <item android:top="44dp">
+    <item android:top="46dp">
         <shape android:shape="rectangle">
-            <size android:height="4dp"/>
+            <size android:height="2dp"/>
             <solid android:color="@color/yellow"/>
         </shape>
     </item>

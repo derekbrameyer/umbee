@@ -1,5 +1,5 @@
 <resources>
-    <style name="UmbeeTheme" parent="Theme.Sherlock.Light.ForceOverflow">
+    <style name="UmbeeTheme" parent="Theme.Sherlock.Light">
         <item name="actionBarStyle">@style/UmbeeActionBar</item>
         <item name="android:actionBarStyle">@style/UmbeeActionBar</item>
         <item name="android:windowBackground">@drawable/window_background</item>

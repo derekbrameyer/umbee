@@ -2,7 +2,7 @@
     <dimen name="pref_title_size">20dp</dimen>
     <dimen name="pref_subtitle_size">12dp</dimen>
     <dimen name="pref_button_text_size">14dp</dimen>
-    <dimen name="action_bar_offset">44dp</dimen>
-    <dimen name="action_bar_bottom_bar_height">4dp</dimen>
+    <dimen name="action_bar_offset">46dp</dimen>
+    <dimen name="action_bar_bottom_bar_height">2dp</dimen>
     <dimen name="pref_container_height">48dp</dimen>
 </resources>

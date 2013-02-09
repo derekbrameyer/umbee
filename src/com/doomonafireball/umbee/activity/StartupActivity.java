@@ -62,7 +62,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import oak.CancelEditText;
+import oak.widget.CancelEditText;
 import roboguice.inject.InjectView;
 
 public class StartupActivity extends RoboSherlockFragmentActivity {
@@ -523,11 +523,13 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     InputMethodManager mgr = (InputMethodManager) getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
-                    Toast.makeText(mContext, getResources().getString(R.string.zip_code_saved), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.zip_code_saved), Toast.LENGTH_SHORT)
+                            .show();
                     WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
                     getWeatherQuery.execute();
                 } else {
-                    Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT)
+                            .show();
                 }
             }
             return true;
@@ -566,7 +568,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                                 HashMap<String, String> parameters = new HashMap<String, String>();
                                 parameters.put("update_time_hour", "" + hourOfDay);
                                 parameters.put("update_time_minute", "" + minute);
-                                parameters.put("update_time_text", UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
+                                parameters.put("update_time_text",
+                                        UmbeeTimeUtils.timeOfDayFromInt(mSharedPrefs.getUpdateTime()));
                                 FlurryAgent.logEvent("update_time_set", parameters);
                                 startUmbeeService();
                             }
@@ -783,7 +786,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                 public void handleMessage(Message msg) {
                     locationET.append(mSharedPrefs.getLocation());
                     if (mSharedPrefs.getLocation().equals("")) {
-                        Toast.makeText(mContext, getResources().getString(R.string.please_set_location), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, getResources().getString(R.string.please_set_location),
+                                Toast.LENGTH_SHORT).show();
                     } else {
                         WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
                         getWeatherQuery.execute();
