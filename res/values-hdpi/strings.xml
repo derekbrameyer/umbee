@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="umbee_thinks_no">umbee says you don\'t need it.</string>
+    <string name="umbee_thinks_yes">umbee says you need it.</string>
+    <string name="umbee_thinks_maybe">umbee says you might need it.</string>
+    <string name="umbee_thinks_probs">umbee says you probs need it.</string>
+</resources>

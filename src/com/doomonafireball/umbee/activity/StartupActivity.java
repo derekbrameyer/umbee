@@ -513,7 +513,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     TextView.OnEditorActionListener locationETListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED
+                    || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT
+                    || actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_SEND) {
                 String loc = locationET.getText().toString();
                 if (UmbeeTextUtils.isValidZipCode(loc)) {
                     mSharedPrefs.setLocation(loc);
