@@ -275,8 +275,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                 d.show();
                 return false;
             case R.id.menu_refresh:
-                WeatherQuery testNotifQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
-                testNotifQuery.execute();
+                setLocation();
                 return false;
             default:
                 return super.onOptionsItemSelected(item);
@@ -510,29 +509,33 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         }
     };
 
+    private void setLocation() {
+        String loc = locationET.getText().toString();
+        if (UmbeeTextUtils.isValidZipCode(loc)) {
+            mSharedPrefs.setLocation(loc);
+            HashMap<String, String> parameters = new HashMap<String, String>();
+            parameters.put("custom_location", loc);
+            FlurryAgent.logEvent("custom_location_set", parameters);
+            InputMethodManager mgr = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
+            Toast.makeText(mContext, getResources().getString(R.string.zip_code_saved), Toast.LENGTH_SHORT)
+                    .show();
+            WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
+            getWeatherQuery.execute();
+        } else {
+            Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
     TextView.OnEditorActionListener locationETListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_UNSPECIFIED
                     || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT
                     || actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_SEND) {
-                String loc = locationET.getText().toString();
-                if (UmbeeTextUtils.isValidZipCode(loc)) {
-                    mSharedPrefs.setLocation(loc);
-                    HashMap<String, String> parameters = new HashMap<String, String>();
-                    parameters.put("custom_location", loc);
-                    FlurryAgent.logEvent("custom_location_set", parameters);
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    mgr.hideSoftInputFromWindow(locationET.getWindowToken(), 0);
-                    Toast.makeText(mContext, getResources().getString(R.string.zip_code_saved), Toast.LENGTH_SHORT)
-                            .show();
-                    WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
-                    getWeatherQuery.execute();
-                } else {
-                    Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT)
-                            .show();
-                }
+                setLocation();
             }
             return true;
         }
