@@ -28,7 +28,7 @@
                 android:layout_toRightOf="@id/IV_icon"
                 android:layout_centerVertical="true"
                 android:text="@string/alert_type"
-                android:textSize="20dp"
+                android:textSize="@dimen/default_text_size_header"
                 android:textColor="@color/abs__holo_blue_light"
                 oak:font="@string/font"/>
     </RelativeLayout>

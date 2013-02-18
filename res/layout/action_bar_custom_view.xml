@@ -9,7 +9,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="@string/umbee_lowercase"
-            android:textSize="28dp"
+            android:textSize="@dimen/action_bar_text_size"
             android:textColor="@color/yellow"
             android:shadowColor="@color/gray_shadow_for_yellow_text"
             android:shadowDx="1.0"

@@ -3,16 +3,16 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:oak="http://oak/oak/schema"
         android:layout_width="fill_parent"
-        android:layout_height="64dp"
+        android:layout_height="@dimen/list_item_height"
         android:orientation="vertical">
     <oak.widget.TextViewWithFont
             android:id="@+id/TV_list_item"
             android:layout_width="fill_parent"
-            android:layout_height="64dp"
+            android:layout_height="@dimen/list_item_height"
             android:gravity="center_vertical"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:textColor="@color/abs__primary_text_holo_light"
-            android:textSize="18sp"
+            android:textSize="@dimen/default_text_size_header"
             oak:font="@string/font"/>
 </LinearLayout>

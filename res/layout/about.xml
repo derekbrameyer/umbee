@@ -28,7 +28,7 @@
                 android:layout_toRightOf="@id/IV_icon"
                 android:layout_centerVertical="true"
                 android:text="@string/about_umbee"
-                android:textSize="20dp"
+                android:textSize="@dimen/default_text_size_header"
                 android:textColor="@color/abs__holo_blue_light"
                 oak:font="@string/font"/>
     </RelativeLayout>
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/about_umbee_content"
                     android:textColor="@color/black"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/default_text_size"
                     oak:font="@string/font"/>
             <oak.widget.TextViewWithFont
                     android:id="@+id/TV_about_content_dev"
@@ -59,7 +59,7 @@
                     android:autoLink="email"
                     android:text="@string/about_umbee_content_dev"
                     android:textColor="@color/black"
-                    android:textSize="16dp"
+                    android:textSize="@dimen/default_text_size"
                     oak:font="@string/font"/>
         </LinearLayout>
     </ScrollView>

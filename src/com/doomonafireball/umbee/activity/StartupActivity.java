@@ -184,9 +184,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         advancedOptionsFadeOutAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_fade_out);
         advancedOptionsRotateCwAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate_cw_180);
         advancedOptionsRotateCcwAnim = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate_ccw_180);
-        //advancedOptionsRotateCwAnim.setFillEnabled(true);
         advancedOptionsRotateCcwAnim.setFillEnabled(true);
-        //advancedOptionsRotateCwAnim.setFillAfter(true);
         advancedOptionsRotateCcwAnim.setFillAfter(true);
 
         advancedOptionsFadeInAnim.setAnimationListener(advancedOptionsFadeInAL);
@@ -205,7 +203,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         mPagerAdapter = new NoaaPagerAdapter(mContext, mNbd);
         todaysPrecipVP.setAdapter(mPagerAdapter);
 
-        todaysPrecipCPI.setViewPager((ViewPager) todaysPrecipVP);
+        todaysPrecipCPI.setViewPager(todaysPrecipVP);
         todaysPrecipCPI.setOnPageChangeListener(todaysPrecipOPCL);
 
         GradientDrawable gd = new GradientDrawable(
@@ -621,11 +619,13 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
         public void handleMessage(Message msg) {
             try {
                 mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
+                if (mNbd.mPop.probabilities.size() > 0) {
+                    setUpPrecipViews();
+                    setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            setUpPrecipViews();
-            setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
         }
     };
 
