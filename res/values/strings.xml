@@ -63,6 +63,18 @@
     <string name="about_umbee_content_dev">\nDeveloped by\nDoom on a Fireball Studios\ndoomonafireball@gmail.com
     </string>
     <string name="notify_tomorrow">Notify me for tomorrow</string>
+    <string name="need_it_c">NEED IT</string>
+    <string name="dont_need_it_c">DON\'T NEED IT</string>
+    <string name="maybs_need_it_c">MAYBS NEED IT</string>
+    <string name="probs_need_it_c">PROBS NEED IT</string>
+    <string name="dynamic_simple_morning_short">Morning precipitation: %1$s%%</string>
+    <string name="dynamic_simple_evening_short">Evening precipitation: %1$s%%</string>
+    <string name="umbee_thinks_no_short">you don\'t need it.</string>
+    <string name="umbee_thinks_yes_short">you need it.</string>
+    <string name="umbee_thinks_maybe_short">you might need it.</string>
+    <string name="umbee_thinks_probs_short">you probs need it.</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 
     <string name="dynamic_single_threshold">umbee will think you need it at %1$s%% and higher.</string>
     <string name="dynamic_triple_threshold1">...might need it at %1$s%% to %2$s%%.</string>
@@ -73,6 +85,12 @@
     <string name="dynamic_umbee_is_set_for">umbee is set for %1$s at %2$s!</string>
     <string name="dynamic_int_percentage">%1$s%%</string>
     <string name="dynamic_day_precipitation">%1$s\'s precipitation</string>
+    <string name="not_configured">NOT CONFIGURED</string>
+    <string name="not_configured_expanded_title">umbee not configured</string>
+    <string name="not_configured_expanded_body">Tap to configure.</string>
+    <string name="umbee_dashclock_description">Displays the morning and evening precipitation chances for today or
+        tomorrow, depending on how you have umbee configured.
+    </string>
 
     <string name="prefs_file">UMBEEPREFS</string>
 

@@ -25,7 +25,8 @@
             android:orientation="vertical">
         <activity
                 android:name=".activity.StartupActivity"
-                android:windowSoftInputMode="stateHidden">
+                android:windowSoftInputMode="stateHidden"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -64,6 +65,21 @@
         </receiver>
         <receiver
                 android:name=".receiver.NotificationReceiver"/>
+        <service
+                android:name=".service.UmbeeDashClockService"
+                android:icon="@drawable/icon_notif"
+                android:label="@string/umbee_lowercase"
+                android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
+            <intent-filter>
+                <action android:name="com.google.android.apps.dashclock.Extension"/>
+            </intent-filter>
+            <meta-data android:name="protocolVersion" android:value="1"/>
+            <meta-data android:name="description"
+                       android:value="@string/umbee_dashclock_description"/>
+            <!-- A settings activity is optional -->
+            <meta-data android:name="settingsActivity"
+                       android:value=".activity.StartupActivity"/>
+        </service>
     </application>
 </manifest>
 
