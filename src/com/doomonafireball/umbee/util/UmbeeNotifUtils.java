@@ -1,6 +1,7 @@
 package com.doomonafireball.umbee.util;
 
 import com.doomonafireball.umbee.R;
+import com.doomonafireball.umbee.activity.StartupActivity;
 import com.doomonafireball.umbee.model.NoaaByDay;
 
 import android.app.Notification;
@@ -106,7 +107,8 @@ public class UmbeeNotifUtils {
 
         PreFroyoNotificationStyleDiscover pfnsd = new PreFroyoNotificationStyleDiscover(ctx);
 
-        PendingIntent pi = PendingIntent.getActivity(ctx, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent
+                .getActivity(ctx, 0, new Intent(ctx, StartupActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
         RemoteViews contentView = new RemoteViews(ctx.getPackageName(), R.layout.two_line_notif);
         contentView.setImageViewResource(R.id.image, R.drawable.icon_notif);

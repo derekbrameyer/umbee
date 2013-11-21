@@ -29,10 +29,8 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
     private static final String NOAA_URL
             = "http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php";
 
-    private boolean mDisplayProgress;
     private boolean mCreateNotif;
     private Context mContext;
-    private ProgressDialog mDialog;
     private NoaaByDay mNbd = new NoaaByDay();
     private SharedPrefsManager mSPM;
     private Handler mHandler;
@@ -44,29 +42,8 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         SharedPrefsManager.initialize(ctx);
         mSPM = SharedPrefsManager.getInstance();
         this.mContext = ctx;
-        this.mDisplayProgress = displayProgress;
         this.mCreateNotif = createNotif;
         this.mHandler = handler;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        if (mDisplayProgress) {
-            mDialog = new ProgressDialog(mContext);
-            mDialog.setIndeterminate(true);
-            mDialog.setMessage(mContext.getResources().getString(R.string.test_notif_fetching));
-            mDialog.setCanceledOnTouchOutside(false);
-            mDialog.setCancelable(true);
-            mDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    if (mDialog.isShowing()) {
-                        mDialog.dismiss();
-                    }
-                }
-            });
-            mDialog.show();
-        }
     }
 
     @Override
@@ -94,17 +71,8 @@ public class WeatherQuery extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    protected void onCancelled() {
-        if (mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
-    }
-
     @Override
     protected void onPostExecute(Void v) {
-        if (mDisplayProgress) {
-            mDialog.dismiss();
-        }
         // Persist data to SharedPrefs
         try {
             mSPM.setNoaaByDayString(mNbd.toJsonString());

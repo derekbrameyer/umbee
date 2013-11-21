@@ -2,14 +2,18 @@
     <dimen name="action_bar_offset">46dp</dimen>
     <dimen name="action_bar_bottom_bar_height">2dp</dimen>
     <dimen name="pref_container_height">48dp</dimen>
-    <dimen name="default_text_size_huge">64dp</dimen>
-    <dimen name="default_text_size_large">28dp</dimen>
-    <dimen name="default_text_size_header">20dp</dimen>
-    <dimen name="default_text_size">16dp</dimen>
-    <dimen name="default_text_size_small">12dp</dimen>
-    <dimen name="todays_precipitation_text_size">@dimen/default_text_size_header</dimen>
+    <dimen name="default_text_size_huge">72sp</dimen>
+    <dimen name="default_text_size_large">28sp</dimen>
+    <dimen name="default_text_size_header">20sp</dimen>
+    <dimen name="default_text_size">16sp</dimen>
+    <dimen name="default_text_size_small">12sp</dimen>
+    <dimen name="todays_precipitation_text_size">28sp</dimen>
     <dimen name="action_bar_text_size">@dimen/default_text_size_large</dimen>
-    <dimen name="time_text_size">22dp</dimen>
+    <dimen name="time_text_size">22sp</dimen>
     <dimen name="list_item_height">64dp</dimen>
-    <dimen name="view_pager_height">130dp</dimen>
+    <dimen name="view_pager_height">175dp</dimen>
+    <dimen name="top_window_padding">0dp</dimen>
+    <dimen name="right_window_padding">0dp</dimen>
+    <dimen name="bottom_window_padding">48dp</dimen>
+    <dimen name="morning_evening_text_size">32sp</dimen>
 </resources>

@@ -1,9 +1,9 @@
 package com.doomonafireball.umbee.activity;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.doomonafireball.umbee.MainApp;
 import com.doomonafireball.umbee.R;
 import com.doomonafireball.umbee.adapter.NoaaPagerAdapter;
@@ -107,6 +107,9 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     @InjectView(R.id.TV_enable_location_updates_sub) TextView enableLocationsSubtitleTV;
     @InjectView(R.id.TV_custom_threshold_title) TextView customThresholdTV;
     @InjectView(R.id.TV_triple_threshold_title) TextView tripleThresholdTitleTV;
+    @InjectView(R.id.sun) View sun;
+    @InjectView(R.id.root) RelativeLayout root;
+    @InjectView(R.id.no_data_text) TextView noDataText;
 
     SharedPrefsManager mSharedPrefs;
     Context mContext;
@@ -128,6 +131,8 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.startup);
@@ -214,7 +219,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
 
         setAdvancedOptionsVisibility();
         setWindowBackgroundGradient(todaysPrecipVP.getCurrentItem());
-        setActionBarBackground();
+        initSunView();
         setUpPrecipViews();
         setUpPreferenceViews();
     }
@@ -235,6 +240,12 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(mContext);
+    }
+
+    private void initSunView() {
+        Drawable d = UmbeeWidgetUtils.getActionBarDrawable(mContext);
+        sun.setBackgroundDrawable(d);
+        sun.invalidate();
     }
 
     @Override
@@ -521,6 +532,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     .show();
             WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
             getWeatherQuery.execute();
+            setSupportProgressBarIndeterminateVisibility(true);
         } else {
             Toast.makeText(mContext, getResources().getString(R.string.not_valid_zip), Toast.LENGTH_SHORT)
                     .show();
@@ -617,6 +629,7 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
     private Handler refreshCompleteHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            setSupportProgressBarIndeterminateVisibility(false);
             try {
                 mNbd = JsonParser.parseNoaaByDay(mSharedPrefs.getNoaaByDayString());
                 if (mNbd.mPop.probabilities.size() > 0) {
@@ -699,32 +712,54 @@ public class StartupActivity extends RoboSherlockFragmentActivity {
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
             gd.setCornerRadius(0f);
+            gd.setDither(true);
+            gd.setAlpha(255);
             Drawable[] layers = new Drawable[2];
             layers[0] = currBgDrawable;
             layers[1] = gd;
-            TransitionDrawable td = new TransitionDrawable(layers);
-            this.getWindow().setBackgroundDrawable(td);
-            td.startTransition(250);
-            currBgDrawable = gd;
-        }
-    }
 
-    private void setActionBarBackground() {
-        ActionBar ab = getSupportActionBar();
-        Drawable d = UmbeeWidgetUtils.getActionBarDrawable(mContext);
-        ab.setBackgroundDrawable(d);
-        ab.hide();
-        ab.show();
+            TransitionDrawable td = new TransitionDrawable(layers);
+            getWindow().setBackgroundDrawable(td);
+            td.startTransition(250);
+            currBgDrawable = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
+            ((GradientDrawable) currBgDrawable).setCornerRadius(0f);
+            currBgDrawable.setDither(true);
+            currBgDrawable.setAlpha(255);
+        } else {
+            int color = getResources().getColor(R.color.cornflower_blue);
+            GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
+            gd.setCornerRadius(0f);
+            gd.setDither(true);
+            gd.setAlpha(255);
+            getWindow().setBackgroundDrawable(gd);
+            currBgDrawable = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{color, getResources().getColor(R.color.window_bg_gradient_bottom)});
+            ((GradientDrawable) currBgDrawable).setCornerRadius(0f);
+            currBgDrawable.setDither(true);
+            currBgDrawable.setAlpha(255);
+        }
     }
 
     private void setUpPrecipViews() {
         if ((mNbd.mPop.probabilities.size() == 0) && mSharedPrefs.getLocation().equals("")) {
             // We haven't gotten any info yet, and we don't have a zip code, so we can't do anything.
+            noDataText.setVisibility(View.VISIBLE);
+            todaysPrecipVP.setVisibility(View.GONE);
+            todaysPrecipCPI.setVisibility(View.GONE);
         } else if ((mNbd.mPop.probabilities.size() == 0)) {
             // We haven't gotten any info yet.
             WeatherQuery getWeatherQuery = new WeatherQuery(mContext, true, false, refreshCompleteHandler);
             getWeatherQuery.execute();
+            noDataText.setVisibility(View.VISIBLE);
+            todaysPrecipVP.setVisibility(View.GONE);
+            todaysPrecipCPI.setVisibility(View.GONE);
         } else {
+            noDataText.setVisibility(View.GONE);
             todaysPrecipVP.setVisibility(View.VISIBLE);
             todaysPrecipCPI.setVisibility(View.VISIBLE);
             int currPos = todaysPrecipVP.getCurrentItem();

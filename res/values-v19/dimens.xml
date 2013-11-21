@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="top_window_padding">25dp</dimen>
+    <dimen name="right_window_padding">0dp</dimen>
+    <dimen name="bottom_window_padding">48dp</dimen>
+</resources>

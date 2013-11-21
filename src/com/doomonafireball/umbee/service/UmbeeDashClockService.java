@@ -116,9 +116,9 @@ public class UmbeeDashClockService extends DashClockExtension {
                         break;
                 }
                 if (sharedPrefsManager.getNotifyTomorrow()) {
-                    expandedTitle = ctx.getString(R.string.tomorrow) + " " + expandedTitle;
+                    expandedTitle = ctx.getString(R.string.tomorrow_c) + " " + expandedTitle;
                 } else {
-                    expandedTitle = ctx.getString(R.string.today) + " " + expandedTitle;
+                    expandedTitle = ctx.getString(R.string.today_c) + " " + expandedTitle;
                 }
             }
 

@@ -1,7 +1,7 @@
 <resources>
     <dimen name="action_bar_offset">54dp</dimen>
     <dimen name="pref_container_height">48dp</dimen>
-    <dimen name="default_text_size_huge">110dp</dimen>
+    <dimen name="default_text_size_huge">120dp</dimen>
     <dimen name="default_text_size_large">56dp</dimen>
     <dimen name="default_text_size_header">20dp</dimen>
     <dimen name="default_text_size">16dp</dimen>
@@ -10,5 +10,6 @@
     <dimen name="action_bar_text_size">28dp</dimen>
     <dimen name="time_text_size">22dp</dimen>
     <dimen name="list_item_height">64dp</dimen>
-    <dimen name="view_pager_height">280dp</dimen>
+    <dimen name="view_pager_height">340dp</dimen>
+    <dimen name="morning_evening_text_size">64sp</dimen>
 </resources>

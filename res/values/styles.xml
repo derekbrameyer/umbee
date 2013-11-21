@@ -2,7 +2,6 @@
     <style name="UmbeeTheme" parent="Theme.Sherlock.Light">
         <item name="actionBarStyle">@style/UmbeeActionBar</item>
         <item name="android:actionBarStyle">@style/UmbeeActionBar</item>
-        <item name="android:windowBackground">@drawable/window_background</item>
         <item name="actionBarItemBackground">@drawable/action_bar_item_selector</item>
         <item name="android:actionBarItemBackground">@drawable/action_bar_item_selector</item>
         <item name="android:selectableItemBackground">@drawable/action_bar_item_selector</item>
@@ -12,16 +11,22 @@
         <item name="actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
         <item name="android:actionOverflowButtonStyle">@style/UmbeeOverflowButton</item>
         <item name="vpiCirclePageIndicatorStyle">@style/UmbeeCirclePageIndicator</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
     <style name="UmbeeActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid">
         <item name="actionBarSize">48dp</item>
         <item name="android:actionBarSize">48dp</item>
-        <item name="displayOptions">showCustom</item>
-        <item name="android:displayOptions">showCustom</item>
-        <item name="customNavigationLayout">@layout/action_bar_custom_view</item>
-        <item name="android:customNavigationLayout">@layout/action_bar_custom_view</item>
-        <item name="background">@drawable/action_bar_background</item>
-        <item name="android:background">@drawable/action_bar_background</item>
+        <item name="displayOptions">disableHome</item>
+        <item name="android:displayOptions">disableHome</item>
+        <item name="titleTextStyle">@style/UmbeeActionBarTextStyle</item>
+        <item name="android:titleTextStyle">@style/UmbeeActionBarTextStyle</item>
+        <item name="background">@color/transparent</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+    <style name="UmbeeActionBarTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textSize">26sp</item>
     </style>
     <style name="UmbeeDialog" parent="Theme.Sherlock.Light">
         <item name="android:windowFrame">@null</item>
@@ -82,6 +87,13 @@
         <item name="android:focusable">true</item>
         <item name="android:paddingLeft">16dip</item>
         <item name="android:paddingRight">16dip</item>
+    </style>
+    <style name="Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="FillWidth" parent="Wrap">
+        <item name="android:layout_width">fill_parent</item>
     </style>
     <style name="UmbeeEditText">
         <item name="android:focusable">true</item>

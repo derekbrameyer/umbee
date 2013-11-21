@@ -10,9 +10,7 @@
     <name>umbee</name>
 
     <properties>
-        <platform.version>
-            4.0.1.2
-        </platform.version>
+        <platform.version>4.4_r1</platform.version>
     </properties>
 
     <repositories>
@@ -39,16 +37,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android-test</artifactId>
-            <version>${platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.willowtreeapps</groupId>
             <artifactId>oak-library</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.9</version>
         </dependency>
 
         <dependency>
@@ -138,7 +129,7 @@
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native
                     </nativeLibrariesDirectory>
                     <sdk>
-                        <platform>14</platform>
+                        <platform>19</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
