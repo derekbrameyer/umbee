@@ -51,6 +51,18 @@
             <scope>provided</scope>
         </dependency>
 
+       <!-- <dependency>
+            <groupId>com.android.support</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>19.1.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.android.preview.support</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.willowtreeapps</groupId>
             <artifactId>oak-library</artifactId>

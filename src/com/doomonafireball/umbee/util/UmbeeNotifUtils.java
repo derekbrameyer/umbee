@@ -9,6 +9,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.preview.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 /**
@@ -16,8 +18,7 @@ import android.widget.RemoteViews;
  */
 public class UmbeeNotifUtils {
 
-    public static void createNotification(Context ctx, NoaaByDay nbd) {
-        NotificationManager mNM = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+    public static void createNotification(Context context, NoaaByDay nbd) {
         SharedPrefsManager mSPM = SharedPrefsManager.getInstance();
 
         int icon = R.drawable.icon_notif;
@@ -47,15 +48,15 @@ public class UmbeeNotifUtils {
                     threshold = mSPM.getSingleThreshold();
                 }
                 if (highestPercentage > threshold) {
-                    ticker = ctx.getString(R.string.umbee_thinks_yes);
-                    title = ctx.getString(R.string.umbee_thinks_yes);
+                    ticker = context.getString(R.string.umbee_thinks_yes);
+                    title = context.getString(R.string.umbee_thinks_yes);
                 } else {
-                    ticker = ctx.getString(R.string.umbee_thinks_no);
-                    title = ctx.getString(R.string.umbee_thinks_no);
+                    ticker = context.getString(R.string.umbee_thinks_no);
+                    title = context.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, morPrecip)
+                text = getSimpleMorningText(context, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, evePrecip);
+                        + getSimpleEveningText(context, evePrecip);
                 break;
             case Refs.ALERT_COMPLEX:
                 int t1 = 25;
@@ -68,24 +69,24 @@ public class UmbeeNotifUtils {
                 }
                 if (highestPercentage > t3) {
                     // Definitely
-                    ticker = ctx.getString(R.string.umbee_thinks_yes);
-                    title = ctx.getString(R.string.umbee_thinks_yes);
+                    ticker = context.getString(R.string.umbee_thinks_yes);
+                    title = context.getString(R.string.umbee_thinks_yes);
                 } else if (highestPercentage > t2) {
                     // Probably
-                    ticker = ctx.getString(R.string.umbee_thinks_probs);
-                    title = ctx.getString(R.string.umbee_thinks_probs);
+                    ticker = context.getString(R.string.umbee_thinks_probs);
+                    title = context.getString(R.string.umbee_thinks_probs);
                 } else if (highestPercentage > t1) {
                     // Maybe
-                    ticker = ctx.getString(R.string.umbee_thinks_maybe);
-                    title = ctx.getString(R.string.umbee_thinks_maybe);
+                    ticker = context.getString(R.string.umbee_thinks_maybe);
+                    title = context.getString(R.string.umbee_thinks_maybe);
                 } else {
                     // Nope
-                    ticker = ctx.getString(R.string.umbee_thinks_no);
-                    title = ctx.getString(R.string.umbee_thinks_no);
+                    ticker = context.getString(R.string.umbee_thinks_no);
+                    title = context.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, morPrecip)
+                text = getSimpleMorningText(context, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, evePrecip);
+                        + getSimpleEveningText(context, evePrecip);
                 break;
             case Refs.ALERT_PERCENT:
                 // Not in use
@@ -93,24 +94,24 @@ public class UmbeeNotifUtils {
             default:
                 int threshold2 = mSPM.getSingleThreshold();
                 if (highestPercentage > threshold2) {
-                    ticker = ctx.getString(R.string.umbee_thinks_yes);
-                    title = ctx.getString(R.string.umbee_thinks_yes);
+                    ticker = context.getString(R.string.umbee_thinks_yes);
+                    title = context.getString(R.string.umbee_thinks_yes);
                 } else {
-                    ticker = ctx.getString(R.string.umbee_thinks_no);
-                    title = ctx.getString(R.string.umbee_thinks_no);
+                    ticker = context.getString(R.string.umbee_thinks_no);
+                    title = context.getString(R.string.umbee_thinks_no);
                 }
-                text = getSimpleMorningText(ctx, morPrecip)
+                text = getSimpleMorningText(context, morPrecip)
                         + "\n"
-                        + getSimpleEveningText(ctx, evePrecip);
+                        + getSimpleEveningText(context, evePrecip);
                 break;
         }
 
-        PreFroyoNotificationStyleDiscover pfnsd = new PreFroyoNotificationStyleDiscover(ctx);
+        PreFroyoNotificationStyleDiscover pfnsd = new PreFroyoNotificationStyleDiscover(context);
 
         PendingIntent pi = PendingIntent
-                .getActivity(ctx, 0, new Intent(ctx, StartupActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                .getActivity(context, 0, new Intent(context, StartupActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
-        RemoteViews contentView = new RemoteViews(ctx.getPackageName(), R.layout.two_line_notif);
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.two_line_notif);
         contentView.setImageViewResource(R.id.image, R.drawable.icon_notif);
         contentView.setTextViewText(R.id.title, title);
         contentView.setTextViewText(R.id.text, text);
@@ -119,12 +120,28 @@ public class UmbeeNotifUtils {
         contentView.setFloat(R.id.title, "setTextSize", pfnsd.getTitleSize());
         contentView.setFloat(R.id.text, "setTextSize", pfnsd.getTextSize());
 
-        Notification notif = new Notification(icon, ticker, when);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(icon)
+                        .setContentTitle("" + morPrecip + "%, " + evePrecip + "%")
+                        .setContentText(ticker)
+                        .setContent(contentView)
+                        .setContentIntent(pi);
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(context);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(1, notificationBuilder.build());
+
+        //Notification notif = new Notification(icon, ticker, when);
         //notif.setLatestEventInfo(ctx, title, text, pi);
-        notif.contentView = contentView;
-        notif.contentIntent = pi;
-        notif.flags |= Notification.FLAG_AUTO_CANCEL;
-        mNM.notify(1, notif);
+        //notif.contentView = contentView;
+        //notif.contentIntent = pi;
+        //notif.flags |= Notification.FLAG_AUTO_CANCEL;
+        //mNM.notify(1, notif);
     }
 
     public static String getSimpleMorningText(Context ctx, int percentage) {
