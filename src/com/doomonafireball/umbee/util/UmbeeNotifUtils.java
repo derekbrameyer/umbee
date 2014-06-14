@@ -4,12 +4,10 @@ import com.doomonafireball.umbee.R;
 import com.doomonafireball.umbee.activity.StartupActivity;
 import com.doomonafireball.umbee.model.NoaaByDay;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.preview.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -120,7 +118,6 @@ public class UmbeeNotifUtils {
         contentView.setFloat(R.id.title, "setTextSize", pfnsd.getTitleSize());
         contentView.setFloat(R.id.text, "setTextSize", pfnsd.getTextSize());
 
-
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(icon)
@@ -130,8 +127,12 @@ public class UmbeeNotifUtils {
                         .setContentIntent(pi);
 
         // Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(context);
+        // This is the Android Waer implementation!
+        //NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+        // This is the non-Android Wear implementation!
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Build the notification and issues it with notification manager.
         notificationManager.notify(1, notificationBuilder.build());
