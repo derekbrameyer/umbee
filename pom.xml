@@ -5,13 +5,28 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.doomonafireball</groupId>
     <artifactId>umbee</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2.0</version>
     <packaging>apk</packaging>
     <name>umbee</name>
 
     <properties>
         <platform.version>4.4_r1</platform.version>
+
+        <!-- you'll need to generate a keystore and put it at the root of your project and change these -->
+        <sign.keystore>umbee.keystore</sign.keystore>
+        <sign.keyalias>release</sign.keyalias>
+        <app.versioncode>5</app.versioncode>
+
+        <!-- the following values will be overwritten on the command line when using the "sign" profile (in CI) -->
+        <sign.storepass>DONT_ACTUALLY_PUT_THE_PASSWORD_HERE</sign.storepass>
+        <sign.keypass>DONT_ACTUALLY_PUT_THE_PASSWORD_HERE</sign.keypass>
     </properties>
+
+    <scm>
+        <!--The following is needed for auto-tagging for "mvn release:prepare"-->
+        <developerConnection>scm:git:git@github.com:derekbrameyer/umbee.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 
     <repositories>
         <repository>
@@ -101,26 +116,34 @@
         </dependency>
 
         <dependency>
-            <groupId>org.acra</groupId>
-            <artifactId>acra</artifactId>
-            <version>4.2.3</version>
+            <groupId>com.google.android.apps.dashclock</groupId>
+            <artifactId>dashclock-api</artifactId>
+            <version>2.0.0</version>
+            <type>jar</type>
         </dependency>
 
         <dependency>
-            <groupId>com.google.android.apps</groupId>
-            <artifactId>dashclock-api</artifactId>
-            <version>1.1</version>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>14.0.0</version>
+            <type>apklib</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>14.0.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.9.0-rc.1</version>
                 <configuration>
                     <androidManifestFile>${project.basedir}/AndroidManifest.xml
                     </androidManifestFile>
@@ -131,7 +154,7 @@
                     <sdk>
                         <platform>19</platform>
                     </sdk>
-                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <undeployBeforeDeploy>false</undeployBeforeDeploy>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
@@ -146,4 +169,83 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>signing</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <removeExistingSignatures>true</removeExistingSignatures>
+                                    <archiveDirectory />
+                                    <includes>
+                                        <include>${project.build.directory}/${project.build.finalName}.apk</include>
+                                    </includes>
+                                    <keystore>${sign.keystore}</keystore>
+                                    <alias>${sign.keyalias}</alias>
+                                    <storepass>${sign.storepass}</storepass>
+                                    <keypass>${sign.keypass}</keypass>
+                                    <verbose>true</verbose>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                        <artifactId>android-maven-plugin</artifactId>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <sign>
+                                <debug>false</debug>
+                            </sign>
+                            <zipalign>
+                                <skip>false</skip>
+                                <verbose>true</verbose>
+                                <inputApk>${project.build.directory}/${project.build.finalName}.apk</inputApk>
+                                <outputApk>${project.build.directory}/${project.build.finalName}-signed-aligned.apk
+                                </outputApk>
+                            </zipalign>
+                            <manifest>
+                                <debuggable>false</debuggable>
+                                <versionCode>${app.versioncode}</versionCode>
+                                <versionName>${project.version}</versionName>
+                                <versionCodeAutoIncrement>false</versionCodeAutoIncrement>
+                            </manifest>
+                            <proguard>
+                                <skip>true</skip>
+                            </proguard>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>manifestUpdate</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>manifest-update</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>alignApk</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>zipalign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
